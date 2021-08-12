@@ -1,5 +1,5 @@
 bkp/
-node/
+node/node_modules
 web_apllication/electronics-sentiment-analysis-on-youtube-comments/src/Components/firebaseApi.js
 node/serviceAccountKey_teste.json
 node/serviceAccountKey.json
