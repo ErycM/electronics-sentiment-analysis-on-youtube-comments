@@ -8,49 +8,20 @@ import time
 import numpy as np
 import matplotlib.pyplot as plt
 
-
-# import stop_words
-# from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
-from sklearn.model_selection import train_test_split, GridSearchCV
-# from sklearn.naive_bayes import MultinomialNB
+from sklearn.model_selection import train_test_split
 from sklearn.svm import LinearSVC
-# from sklearn.metrics import accuracy_score
 from sklearn.preprocessing import LabelEncoder
-# from sklearn.datasets import make_classification
-# from scikitplot.metrics import plot_confusion_matrix
-from sklearn.metrics import classification_report
-# from sklearn.metrics import r2_score, mean_absolute_percentage_error
-from yellowbrick.regressor import ResidualsPlot
 
-import seaborn as sns
-import imblearn
-from collections import Counter
-from sklearn.datasets import make_classification
-from imblearn.over_sampling import SMOTE
-from imblearn.under_sampling import RandomUnderSampler
-from imblearn.pipeline import Pipeline
-from matplotlib import pyplot
 import numpy
 from scikitplot.metrics import plot_confusion_matrix
+ 
 
-from imblearn.over_sampling import RandomOverSampler
-from imblearn.over_sampling import SMOTE 
-# from imblearn.over_sampling import SMOTENC
-# from imblearn.over_sampling import SMOTEN
-from imblearn.over_sampling import ADASYN 
-from imblearn.over_sampling import BorderlineSMOTE
-from imblearn.over_sampling import KMeansSMOTE
-from imblearn.over_sampling import SVMSMOTE 
-
-from sklearn.ensemble import AdaBoostClassifier
-from sklearn.ensemble import RandomForestClassifier
-from xgboost import XGBClassifier
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn import svm
 
 from gensim.models import Word2Vec
 from gensim.models import KeyedVectors
-from sklearn.decomposition import LatentDirichletAllocation,TruncatedSVD
+from sklearn.decomposition import TruncatedSVD
 import nltk
 from nltk.corpus import stopwords
 import re
@@ -61,7 +32,6 @@ warnings.filterwarnings('ignore')
 import matplotlib.pyplot as plt
 %matplotlib inline
 
-from catboost import CatBoostClassifier, Pool
 from wordcloud import WordCloud
 ```
 
@@ -943,11 +913,11 @@ y_pred_lsa = model_lsa.predict(X_test_lsa)
 y_pred_train_lsa = model_lsa.predict(X_train_lsa)
 ```
 
-    Before dataset shape [(-1, 191), (0, 1300), (1, 2434)]
-    Resampled dataset shape [(-1, 2470), (0, 1300), (1, 2434)]
+    Before dataset shape [(-1, 184), (0, 1311), (1, 2430)]
+    Resampled dataset shape [(-1, 2402), (0, 1311), (1, 2430)]
     -------------------------------------------
-    Before dataset shape [(-1, 177), (0, 1290), (1, 2458)]
-    Resampled dataset shape [(-1, 2502), (0, 1290), (1, 2458)]
+    Before dataset shape [(-1, 196), (0, 1309), (1, 2420)]
+    Resampled dataset shape [(-1, 2406), (0, 1309), (1, 2420)]
     -------------------------------------------
     
 
@@ -965,24 +935,24 @@ print(classification_report(y_test_lsa, y_pred_lsa, target_names=target_names))
     SVC - Report W2V
                   precision    recall  f1-score   support
     
-        Negativo       0.05      0.45      0.09        47
-          Neutro       0.43      0.01      0.02       335
-        Positivo       0.60      0.56      0.58       600
+        Negativo       0.10      0.67      0.17        58
+          Neutro       0.64      0.02      0.04       315
+        Positivo       0.65      0.60      0.62       609
     
-        accuracy                           0.36       982
-       macro avg       0.36      0.34      0.23       982
-    weighted avg       0.52      0.36      0.36       982
+        accuracy                           0.42       982
+       macro avg       0.46      0.43      0.28       982
+    weighted avg       0.61      0.42      0.41       982
     
     SVC - Report LSA
                   precision    recall  f1-score   support
     
-        Negativo       0.09      0.80      0.16        65
-          Neutro       0.37      0.05      0.09       336
-        Positivo       0.60      0.35      0.44       581
+        Negativo       0.07      0.83      0.13        46
+          Neutro       0.56      0.06      0.11       317
+        Positivo       0.66      0.42      0.52       619
     
-        accuracy                           0.28       982
-       macro avg       0.35      0.40      0.23       982
-    weighted avg       0.49      0.28      0.30       982
+        accuracy                           0.32       982
+       macro avg       0.43      0.44      0.25       982
+    weighted avg       0.60      0.32      0.37       982
     
     
 
@@ -1013,7 +983,7 @@ disp.set_title('LSVC - LSA')
     
 
 
-Após a execução do oversample e depois de treinar o modelo com LinearSVC obtivemos os valores de 69% de recall para negativos e 58% de recall para positivos em word2vec. Para o método LSA, obtivemos um valor mais elevado de recall em negativos (80%) e menor em positivos (35%), porém a fim de equilibrar nossos resultados em ambos os atributos, o word2vec é o mais efiente. 
+Após a execução do oversample e depois de treinar o modelo com LinearSVC obtivemos os valores de 67% de recall para negativos e 60% de recall para positivos em word2vec. Para o método LSA, obtivemos um valor mais elevado de recall em negativos (80%) e menor em positivos (35%), porém a fim de equilibrar nossos resultados em ambos os atributos, o word2vec é o mais efiente. 
 
 # 5.3 Concretizando resultados
 
