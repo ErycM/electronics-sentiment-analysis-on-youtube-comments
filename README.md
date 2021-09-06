@@ -606,13 +606,13 @@ Onde "final_type" corresponde a classificação do comentário positivo (1), neu
 
 Meu objetivo aqui é padronizar meus comentários a fim de aplicar as tecnicas de criação de feature (LSA e Word2Vec). Defini funções para cada uma das etapadas da transformação, as mesmas são:
 
-## 1. Transformar todos os comentários para letras minúculas;
-## 2. Remover pontuações;
-## 3. Transformar emojis para códigos. Exemplo: 
-## 4. Normalização do texto em UTF-8
-## 5. Remoção de stop words (excessão a palavra "não")
-## 6. Estematização das palavras. Exemplo: 
-## 7. Remoção de excesso de espaços (\n)
+### 3.2.1. Transformar todos os comentários para letras minúculas;
+### 3.2.2. Remover pontuações;
+### 3.2.3. Transformar emojis para códigos. Exemplo: 
+### 3.2.4. Normalização do texto em UTF-8
+### 3.2.5. Remoção de stop words (excessão a palavra "não")
+### 3.2.6. Estematização das palavras. Exemplo: 
+### 3.2.7. Remoção de excesso de espaços (\n)
 
 
 ```python
