@@ -20,28 +20,7 @@ O maior desafio para este processo é a forma de categorizar a base principal do
 
 Foi selecionado um total de 26 celulares para a análise com base nos lançamentos de 2020 e 2021 mais populares pelas suas faixas de preços. Coletei um total de 10 mil comentários para a base de dados. 
 
-
-```python
-phones_colleted
-```
-
-
-
-
 <div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -209,19 +188,6 @@ A interface contem os seguintes requisitos funcionais e técnicos:
 Após a criação do site para a coleta de avaliações, monitorei os dados coletados e avaliados pelos usuários. Meu número final de comentários avaliados foi o evidenciado abaixo: 
 
 <div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -263,19 +229,6 @@ Com os comentários avaliados, efetuei então a coleta dos dados. Os detalhes do
 Após a coleta dos dados do Firebase e sua manipulação, os seguintes dados foram coletados:
 
 <div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -1041,7 +994,7 @@ print(classification_report(y_test_lsa, y_pred_lsa, target_names=target_names))
 ![svg](youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_55_1.svg)
 ![svg](youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_55_2.svg)
     
-Após a execução do oversample e depois de treinar o modelo com LinearSVC obtivemos os valores de 67% de recall para negativos e 60% de recall para positivos em word2vec. Para o método LSA, obtivemos um valor mais elevado de recall em negativos (80%) e menor em positivos (35%), porém a fim de equilibrar nossos resultados em ambos os atributos, o word2vec é o mais efiente. 
+Após a execução do oversample e depois de treinar o modelo com LinearSVC obtivemos os valores de 67% de recall para negativos e 60% de recall para positivos em word2vec. Para o método LSA, obtivemos um valor mais elevado de recall em negativos (83%) e menor em positivos (42%), porém a fim de equilibrar nossos resultados em ambos os atributos, o word2vec é o mais efiente. 
 
 # 5.3 Concretizando resultados
 
