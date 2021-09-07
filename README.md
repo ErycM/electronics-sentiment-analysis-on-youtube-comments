@@ -204,9 +204,9 @@ Após a criação do site para a coleta de avaliações, monitorei os dados cole
   </thead>
   <tbody>
     <tr>
-      <td>1142</td>
       <td>4908</td>
       <td>49.08</td>
+      <td>1142</td>
       <td>232</td>
       <td>3491</td>
       <td>35</td>
