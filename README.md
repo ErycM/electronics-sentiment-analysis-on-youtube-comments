@@ -734,47 +734,18 @@ Através da análise exploratória, entende-se que a utilização de um método 
 
 ```python
 def overSamplDef(X_res, y_res, overMethod, sampling_strategy='auto'):
-
     from collections import Counter
-
     from imblearn.over_sampling import RandomOverSampler
-
     from imblearn.over_sampling import SMOTE 
-
-    # from imblearn.over_sampling import SMOTENC
-
     from imblearn.over_sampling import SMOTEN
-
     from imblearn.over_sampling import ADASYN 
-
     from imblearn.over_sampling import BorderlineSMOTE
-
     from imblearn.over_sampling import KMeansSMOTE
-
     from imblearn.over_sampling import SVMSMOTE 
-
-    
-
-    # print(sampling_strategy)
-
-
-
     print('Before dataset shape %s' % sorted(Counter(y_res).items()))
-
     ros = overMethod(sampling_strategy=sampling_strategy)
-
-    # ros = BorderlineSMOTE()
-
-    # sampling_strategy='minority'
-
-    # ros = SMOTE()
-
     X_res, y_res = ros.fit_resample(X_res, y_res)
-
-
-
     print('Resampled dataset shape %s' % sorted(Counter(y_res).items()))
-
     print("-------------------------------------------")
 
     return X_res, y_res
@@ -790,8 +761,6 @@ required_columns = 'transformed_comment'
 
 le = LabelEncoder()
 
-
-
 X = df[required_columns]
 
 y = le.fit_transform(df['final_type'])
@@ -803,37 +772,21 @@ y = le.fit_transform(df['final_type'])
 ```python
 all_commnets_list = df[required_columns].to_list()
 
-
-
 tokenized_words = []
 
-
-
 for i in range(len(all_commnets_list)):
-
-    #tokenize the text to list of sentences
-
     tokenized_sentence = nltk.sent_tokenize(all_commnets_list[i])
-
-    #tokenize the list of sentences to list of words
-
     tokenized = [nltk.word_tokenize(sentence) for sentence in tokenized_sentence]
-
-    #remove the stop words from the text
 
     for y, _ in enumerate(tokenized):
 
         tokenized_words.append([word for word in tokenized[y]])
 
 
-
 all_commnets_list = tokenized_words
-
-
 
 model = Word2Vec(all_commnets_list, min_count=1)
 ```
-
 
 ```python
 model.wv.save('eletronics_model.bin')
@@ -953,8 +906,7 @@ y_pred_train_lsa = model_lsa.predict(X_train_lsa)
     Before dataset shape [(-1, 196), (0, 1309), (1, 2420)]
     Resampled dataset shape [(-1, 2406), (0, 1309), (1, 2420)]
     -------------------------------------------
-    
-
+   
 
 ```python
 target_names = ['Negativo', 'Neutro', 'Positivo']
