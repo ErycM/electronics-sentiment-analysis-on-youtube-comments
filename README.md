@@ -192,7 +192,6 @@ Após a criação do site para a coleta de avaliações, monitorei os dados cole
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>Unnamed: 0</th>
       <th>data</th>
       <th>comentarios avaliados</th>
       <th>comentarios avaliados %</th>
@@ -207,8 +206,6 @@ Após a criação do site para a coleta de avaliações, monitorei os dados cole
   </thead>
   <tbody>
     <tr>
-      <th>0</th>
-      <td>0</td>
       <td>06/09/2021 10:36:01</td>
       <td>4908</td>
       <td>49.08</td>
@@ -224,7 +221,7 @@ Após a criação do site para a coleta de avaliações, monitorei os dados cole
 </table>
 </div>
 
-Com os comentários avaliados, efetuei então a coleta dos dados. Os detalhes do mesmo utilizando a API do firebase podem ser encontrados em "5.youtube-review-comment-collect.ipynb". O mesmo não será exposto aqui a fim de condensar o processo.
+Com os comentários avaliados, efetuei então a coleta dos dados. Os detalhes do mesmo utilizando a API do firebase podem ser encontrados em [5.youtube-review-comment-collect.ipynb](https://github.com/ErycM/electronics-sentiment-analysis-on-youtube-comments/blob/main/5.youtube-review-comment-collect.ipynb). O mesmo não será exposto aqui a fim de condensar o processo.
 
 Após a coleta dos dados do Firebase e sua manipulação, os seguintes dados foram coletados:
 
@@ -753,7 +750,7 @@ def overSamplDef(X_res, y_res, overMethod, sampling_strategy='auto'):
 
 ## 5.2 Criando Freatures
 
-Por meio de alguns testes e análises efetuadas em "6.youtube-comments-types-analysis.ipynb" concluiu-se que os melhores métodos de criação de freatures a serem utilizados são o LSA e Word2Vec pois os mesmos trazem os melhores resultados quando somados ao oversample. 
+Por meio de alguns testes e análises efetuadas em [6.youtube-comments-types-analysis.ipynb](https://github.com/ErycM/electronics-sentiment-analysis-on-youtube-comments/blob/main/6.youtube-comments-types-analysis.ipynb) concluiu-se que os melhores métodos de criação de freatures a serem utilizados são o LSA e Word2Vec pois os mesmos trazem os melhores resultados quando somados ao oversample. 
 
 
 ```python
@@ -859,7 +856,7 @@ Em ambos os métodos 100 features foram criadas para a classificação dos comen
 
 # 5.3 Treinando o Modelo
 
-Para o treinamento do modelo a partir das features criadas o métodos LinearSVC trouxe o melhor resultado de recall comparado aos demais métodos utilizados em "6.youtube-comments-types-analysis.ipynb". Para a execução do oversample o método Adaptive Synthetic (ADASYN) me trouxe o melhor resultado pois o mesmo controla com melhor eficácia a replicação de outliers no meu escopo de dados em relação ao SMOTE. A estratégia utilizada para a criação de novos dados com o ADASYN foi a partir do "minority" que equilibra somente os dados de menor quantidade com os de maior quantidade, evitando qualquer alteração nos dados de categoria neutra que não são interessantes para a nossa análise. 
+Para o treinamento do modelo a partir das features criadas o métodos LinearSVC trouxe o melhor resultado de recall comparado aos demais métodos utilizados em [6.youtube-comments-types-analysis.ipynb](https://github.com/ErycM/electronics-sentiment-analysis-on-youtube-comments/blob/main/6.youtube-comments-types-analysis.ipynb). Para a execução do oversample o método Adaptive Synthetic (ADASYN) me trouxe o melhor resultado pois o mesmo controla com melhor eficácia a replicação de outliers no meu escopo de dados em relação ao SMOTE. A estratégia utilizada para a criação de novos dados com o ADASYN foi a partir do "minority" que equilibra somente os dados de menor quantidade com os de maior quantidade, evitando qualquer alteração nos dados de categoria neutra que não são interessantes para a nossa análise. 
 
 
 ```python
