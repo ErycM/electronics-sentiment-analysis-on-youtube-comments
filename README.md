@@ -172,16 +172,16 @@ Considerei que a melhor maneira de encontrar os reviews dos produtos é por meio
 
 ## 2.3 Coleta das informações
 
-Como evidenciado na exposição do problema não tínhamos uma forma existente de coleta desses comentários já classificados no youtube. Para isso criou-se então um site de classificação dos comentários aberto ao público. O mesmo pode ser visualizado através do [link](https://comments-reviews-web-app.vercel.app/). A mesma tem a seguinte interface:
+Como evidenciado na exposição do problema não tínhamos uma forma existente de coleta desses comentários já classificados no youtube. Para isso criou-se então um site de classificação dos comentários aberto ao público. O site pode ser visualizado através do [link](https://comments-reviews-web-app.vercel.app/) e o projeto no repositório [comments-reviews-web-app](https://github.com/ErycM/comments-reviews-web-app). A interface foi desenvolvida no seguinte formato:
    
 ![png](youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_15_0.png)
     
-A interface contem os seguintes requisitos funcionais e técnicos:
+E seus seguintes requisitos funcionais e técnicos são:
 
-### 2.3.1 Criada em Reactjs e os dados são armazenados por meio do Firebase;
-### 2.3.2 A seleção dos comentários para os usuários foi de forma aleatória e com pesos. Onde os comentários menos avaliados pelos usuários tinham um peso maior para serem trazidos com maior probabilidade antes dos mais avaliados;
-### 2.3.3 Cada usuário que fez a avaliação será diferenciado pelo IP ou um timestamp da página aberta no momento a fim de contabilizar o experimento;
-### 2.3.4 Um total de 10 mil comentários foram armazenados na ferramenta.
+- Criada em Reactjs e os dados são armazenados por meio do Firebase;
+- A seleção dos comentários para os usuários foi de forma aleatória e com pesos. Onde os comentários menos avaliados pelos usuários tinham um peso maior para serem trazidos com maior probabilidade antes dos mais avaliados;
+- Cada usuário que fez a avaliação será diferenciado pelo IP ou um timestamp da página aberta no momento a fim de contabilizar o experimento;
+- Um total de 10 mil comentários foram armazenados na ferramenta.
 
 # 3.1 Preparação dos dados
 
@@ -943,7 +943,7 @@ print(classification_report(y_test_lsa, y_pred_lsa, target_names=target_names))
 ![svg](youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_55_1.svg)
 ![svg](youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_55_2.svg)
     
-Após a execução do oversample e depois de treinar o modelo com LinearSVC obtivemos os valores de 67% de recall para negativos e 60% de recall para positivos em word2vec. Para o método LSA, obtivemos um valor mais elevado de recall em negativos (83%) e menor em positivos (42%), porém a fim de equilibrar nossos resultados em ambos os atributos, o word2vec é o mais efiente. 
+Após a execução do oversample e depois de treinar o modelo com LinearSVC obtivemos os valores de 67% de recall para negativos e 60% de recall para positivos em word2vec. Para o método LSA, obtivemos um valor mais elevado de recall em negativos (83%) e menor em positivos (42%), porém a fim de equilibrar nossos resultados em ambos os atributos, o word2vec é o mais eficiente. 
 
 # 5.3 Concretizando resultados
 
