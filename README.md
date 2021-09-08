@@ -2,11 +2,11 @@
 
 # 1 Exposição do problema
 
-Observando o volume de análises de celulares eletrônicos no youtube e sua popularidade de comentários, notei a possibilidade de efetuar uma categorização dos comentários desses vídeos a fim de conseguir uma indicação sobre quais os celulares são mais bem ou mal recebidos pelo público. Trazendo uma expectativa popular sobre os mesmos. 
+Observando a popularidade e o volume de análises de celulares eletrônicos no youtube, notei a possibilidade de efetuar uma categorização dos comentários desses vídeos a fim de conseguir uma indicação sobre quais os celulares são mais bem ou mal recebidos pelo público. Trazendo uma expectativa popular sobre os mesmos. 
 
 Temos assim como objetivo do modelo indicar quais são os comentários negativos e positivos das análises dos celulares, ou seja, seu valor de recall para comentários negativos e positivos.
 
-O maior desafio para este processo é a forma de categorizar a base principal dos dados para o treino do meu modelo. Os comentários dos vídeos do youtube possuem somente a opção “like” que não define se o mesmo é positivo ou negativo, somente se o comentário foi aceito pela maioria ou não. Algumas tentativas de utilização de APIs para definição desta base como o google natural language api foram utilizadas, porém com resultados bastante insatisfatórios. 
+O maior desafio para este processo é a forma de categorizar a base principal dos dados para o treino do meu modelo. Os comentários dos vídeos do youtube possuem somente a opção “like” que não define se o mesmo é positivo ou negativo, somente se o comentário foi aceito por muitas pessoas ou não. Algumas tentativas de utilização de APIs para definição desta base como o google natural language api foram utilizadas, porém com resultados bastante insatisfatórios. 
 
 # 2 Coleta dos dados
 
@@ -160,7 +160,7 @@ Foi selecionado um total de 26 celulares para a análise com base nos lançament
 
 ## 2.2 Levantamento da pesquisa e filtro dos vídeos
 
-Considerei que a melhor maneira de encontrar os reviews dos produtos é por meio da pesquisa com o título “ ‘marca + modelo’ análise" em português para vídeos enviados até 12 meses atrás e com no mínimo 50 mil visualizações. Espera-se que ao menos 5 vídeos de cada aparelho sejam analisados.
+Considerei que a melhor maneira de encontrar os reviews dos produtos é por meio da pesquisa com o título “ ‘marca + modelo’ análise" em português para vídeos enviados até 24 meses atrás e com no mínimo 50 mil visualizações. Espera-se que ao menos 5 vídeos de cada aparelho sejam analisados.
 
 ## 2.3 Coleta das informações
 
@@ -422,13 +422,13 @@ Onde "final_type" corresponde a classificação do comentário positivo (1), neu
 
 # 3.2 Transformação com técnicas de NLP
 
-Meu objetivo aqui é padronizar meus comentários a fim de aplicar as tecnicas de criação de feature (LSA e Word2Vec). Defini funções para cada uma das etapadas da transformação, as mesmas são:
+Meu objetivo aqui é padronizar meus comentários a fim de aplicar as tecnicas de criação de feature (LSA e Word2Vec). Defini funções para cada uma das etapas da transformação, as mesmas são:
 
 - Transformar todos os comentários para letras minúculas;
 - Remover pontuações;
 - Transformar emojis para códigos. Exemplo: 🙇 para :pessoa_fazendo_reverencia:
 - Normalização do texto em UTF-8
-- Remoção de stop words (excessão a palavra "não")
+- Remoção de stop words
 - Estematização das palavras. Exemplo: "comprar" para "compr" 
 - Remoção de excesso de espaços (\n)
 
@@ -576,7 +576,7 @@ df['transformed_comment'] = excess_space_remover(df['transformed_comment'])
 
 # 4 Análise Exploratória
 
-Após o tratamento das informações algumas análises foram feitas a fim de entender os dados. 
+Após o tratamento das informações, algumas análises foram feitas a fim de entender os dados. 
 
 
 ```python
@@ -641,7 +641,7 @@ fig.axes.title.set_size(20)
 
 ![svg](youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_32_0.svg)
     
-Nota-se uma quantidade muito baixa de comentários negativos em nosso escopo de dados, além de uma quantidade muito grande de comentários positivos. Técnicas de balanceamento deverão ser utilizadas nesse modelo.
+Nota-se uma quantidade muito baixa de comentários negativos em nosso escopo de dados, além de uma quantidade muito grande de comentários positivos. Técnicas de balanceamento foram utilizadas nesse modelo.
 
 ```python
 wc = WordCloud(background_color='black', width = 3000, height = 2000, colormap='Set2', collocations=False)
@@ -784,7 +784,7 @@ Em ambos os métodos 100 features foram criadas para a classificação dos comen
 
 # 5.3 Treinando o Modelo
 
-Para o treinamento do modelo a partir das features criadas o métodos LinearSVC trouxe o melhor resultado de recall comparado aos demais métodos utilizados em [6.youtube-comments-types-analysis.ipynb](https://github.com/ErycM/electronics-sentiment-analysis-on-youtube-comments/blob/main/6.youtube-comments-types-analysis.ipynb). Para a execução do oversample o método Adaptive Synthetic (ADASYN) me trouxe o melhor resultado pois o mesmo controla com melhor eficácia a replicação de outliers no meu escopo de dados em relação ao SMOTE. A estratégia utilizada para a criação de novos dados com o ADASYN foi a partir do "minority" que equilibra somente os dados de menor quantidade com os de maior quantidade, evitando qualquer alteração nos dados de categoria neutra que não são interessantes para a nossa análise. 
+Para o treinamento do modelo a partir das features criadas o método LinearSVC trouxe o melhor resultado de recall comparado aos demais métodos utilizados em [6.youtube-comments-types-analysis.ipynb](https://github.com/ErycM/electronics-sentiment-analysis-on-youtube-comments/blob/main/6.youtube-comments-types-analysis.ipynb). Para a execução do oversample o método Adaptive Synthetic (ADASYN) me trouxe o melhor resultado pois o mesmo controla com melhor eficácia a replicação de outliers no meu escopo de dados em relação ao SMOTE. A estratégia utilizada para a criação de novos dados com o ADASYN foi a partir do "minority" que equilibra somente os dados de menor quantidade com os de maior quantidade, evitando qualquer alteração nos dados de categoria neutra que não são interessantes para a minha análise. 
 
 
 ```python
@@ -868,11 +868,11 @@ print(classification_report(y_test_lsa, y_pred_lsa, target_names=target_names))
 ![svg](youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_55_1.svg)
 ![svg](youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_55_2.svg)
     
-Após a execução do oversample e depois de treinar o modelo com LinearSVC obtivemos os valores de 67% de recall para negativos e 60% de recall para positivos em word2vec. Para o método LSA, tivemos um valor mais elevado de recall em negativos (83%) e menor em positivos (42%), porém para equilibrar nossos resultados em ambos os atributos o word2vec é o mais eficiente. 
+Após a execução do oversample e depois de treinar o modelo com LinearSVC obtivemos os valores de 67% de recall para negativos e 60% de recall para positivos em word2vec. Para o método LSA, tivemos um valor mais elevado de recall em negativos (83%) e menor em positivos (42%), porém para equilibrar nossos resultados em ambos os atributos o word2vec é o mais adequado. 
 
 # 5.3 Concretizando resultados
 
-A fim entendermos qual é o resultado concreto do nosso modelo, efetuei o treino do modelo 600 vezes obtendo resultados mais precisos. 
+A fim entender qual é o resultado concreto do meu modelo, efetuei o mesmo treino 600 vezes obtendo resultados mais precisos. 
 
 ```python
 model_report = pd.DataFrame()
