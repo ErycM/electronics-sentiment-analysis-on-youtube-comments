@@ -2,17 +2,11 @@
 
 # 1 Exposição do problema
 
-Observando o volume de análises de celulares eletrônicos no youtube e sua popularidade de comentários, notei a possibilidade de efetuar uma categorização dos comentários desses vídeos a fim de conseguir uma indicação sobre quais os celulares são mais bem ou mal recebidos pelo público. Trazendo uma expectativa popular sobre os mesmos. 
-
-
+Observando a popularidade e o volume de análises de celulares eletrônicos no youtube, notei a possibilidade de efetuar uma categorização dos comentários desses vídeos a fim de conseguir uma indicação sobre quais os celulares são mais bem ou mal recebidos pelo público. Trazendo uma expectativa popular sobre os mesmos. 
 
 Temos assim como objetivo do modelo indicar quais são os comentários negativos e positivos das análises dos celulares, ou seja, seu valor de recall para comentários negativos e positivos.
 
-
-
-O maior desafio para este processo é a forma de categorizar a base principal dos dados para o treino do meu modelo. Os comentários dos vídeos do youtube possuem somente a opção “like” que não define se o mesmo é positivo ou negativo, somente se o comentário foi aceito pela maioria ou não. Algumas tentativas de utilização de APIs para definição desta base como o google natural language api foram utilizadas, porém com resultados bastante insatisfatórios. 
-
-
+O maior desafio para este processo é a forma de categorizar a base principal dos dados para o treino do meu modelo. Os comentários dos vídeos do youtube possuem somente a opção “like” que não define se o mesmo é positivo ou negativo, somente se o comentário foi aceito por muitas pessoas ou não. Algumas tentativas de utilização de APIs para definição desta base como o google natural language api foram utilizadas, porém com resultados bastante insatisfatórios. 
 
 # 2 Coleta dos dados
 
@@ -164,24 +158,22 @@ Foi selecionado um total de 26 celulares para a análise com base nos lançament
 </table>
 </div>
 
-
-
 ## 2.2 Levantamento da pesquisa e filtro dos vídeos
 
-Considerei que a melhor maneira de encontrar os reviews dos produtos é por meio da pesquisa com o título “ ‘marca + modelo’ análise" em português para vídeos enviados até 12 meses atrás e com no mínimo 50 mil visualizações. Espera-se que ao menos 5 vídeos de cada aparelho sejam analisados.
+Considerei que a melhor maneira de encontrar os reviews dos produtos é por meio da pesquisa com o título “ ‘marca + modelo’ análise" em português para vídeos enviados até 24 meses atrás e com no mínimo 50 mil visualizações. Espera-se que ao menos 5 vídeos de cada aparelho sejam analisados.
 
 ## 2.3 Coleta das informações
 
-Como evidenciado na exposição do problema não tínhamos uma forma existente de coleta desses comentários já classificados no youtube. Para isso criou-se então um site de classificação dos comentários aberto ao público. O mesmo pode ser visualizado através do [link](https://comments-reviews-web-app.vercel.app/). A mesma tem a seguinte interface:
+Como evidenciado na exposição do problema não tínhamos uma forma existente de coleta desses comentários já classificados no youtube. Para isso criou-se então um site de classificação dos comentários aberto ao público. O site pode ser visualizado através do [link](https://comments-reviews-web-app.vercel.app/) e o projeto no repositório [comments-reviews-web-app](https://github.com/ErycM/comments-reviews-web-app). A interface foi desenvolvida no seguinte formato:
    
 ![png](youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_15_0.png)
     
-A interface contem os seguintes requisitos funcionais e técnicos:
+E seus seguintes requisitos funcionais e técnicos são:
 
-### 2.3.1 Criada em Reactjs e os dados são armazenados por meio do Firebase;
-### 2.3.2 A seleção dos comentários para os usuários foi de forma aleatória e com pesos. Onde os comentários menos avaliados pelos usuários tinham um peso maior para serem trazidos com maior probabilidade antes dos mais avaliados;
-### 2.3.3 Cada usuário que fez a avaliação será diferenciado pelo IP ou um timestamp da página aberta no momento a fim de contabilizar o experimento;
-### 2.3.4 Um total de 10 mil comentários foram armazenados na ferramenta.
+- Criada em Reactjs e os dados são armazenados por meio do Firebase;
+- A seleção dos comentários para os usuários foi de forma aleatória e com pesos. Onde os comentários menos avaliados pelos usuários tinham um peso maior para serem trazidos com maior probabilidade antes dos mais avaliados;
+- Cada usuário que fez a avaliação será diferenciado pelo IP ou um timestamp da página aberta no momento a fim de contabilizar o experimento;
+- Um total de 10 mil comentários foram armazenados na ferramenta.
 
 # 3.1 Preparação dos dados
 
@@ -191,13 +183,10 @@ Após a criação do site para a coleta de avaliações, monitorei os dados cole
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
-      <th></th>
-      <th>Unnamed: 0</th>
-      <th>data</th>
       <th>comentarios avaliados</th>
       <th>comentarios avaliados %</th>
-      <th>comentários com 2</th>
       <th>comentários com 3</th>
+      <th>comentários com 2</th>
       <th>comentários com 1</th>
       <th>comentários com 4</th>
       <th>comentários com 5</th>
@@ -207,9 +196,6 @@ Após a criação do site para a coleta de avaliações, monitorei os dados cole
   </thead>
   <tbody>
     <tr>
-      <th>0</th>
-      <td>0</td>
-      <td>06/09/2021 10:36:01</td>
       <td>4908</td>
       <td>49.08</td>
       <td>1142</td>
@@ -224,9 +210,9 @@ Após a criação do site para a coleta de avaliações, monitorei os dados cole
 </table>
 </div>
 
-Com os comentários avaliados, efetuei então a coleta dos dados. Os detalhes do mesmo utilizando a API do firebase podem ser encontrados em "5.youtube-review-comment-collect.ipynb". O mesmo não será exposto aqui a fim de condensar o processo.
+Com os comentários avaliados, efetuei então a coleta dos dados. Os detalhes da extração e utilização da API do firebase podem ser encontrados em [5.youtube-review-comment-collect.ipynb](https://github.com/ErycM/electronics-sentiment-analysis-on-youtube-comments/blob/main/5.youtube-review-comment-collect.ipynb). O mesmo não será exposto aqui a fim de condensar o processo. Os dados com avaliações pares e ambíguas foram categorizados como neutro.
 
-Após a coleta dos dados do Firebase e sua manipulação, os seguintes dados foram coletados:
+Após a coleta dos dados do Firebase e sua manipulação o seguinte report foi gerado:
 
 <div>
 <table border="1" class="dataframe">
@@ -339,18 +325,6 @@ Após a coleta dos dados do Firebase e sua manipulação, os seguintes dados for
       <th>...</th>
       <td>...</td>
       <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
     </tr>
     <tr>
       <th>4902</th>
@@ -444,19 +418,19 @@ Após a coleta dos dados do Firebase e sua manipulação, os seguintes dados for
 
 
 
-Onde "final_type" corresponde a classificação do comentário positivo (1), neutro(0) ou negativo(-1)
+Onde "final_type" corresponde a classificação do comentário positivo (1), neutro(0) ou negativo(-1).
 
 # 3.2 Transformação com técnicas de NLP
 
-Meu objetivo aqui é padronizar meus comentários a fim de aplicar as tecnicas de criação de feature (LSA e Word2Vec). Defini funções para cada uma das etapadas da transformação, as mesmas são:
+Meu objetivo aqui é padronizar meus comentários a fim de aplicar as tecnicas de criação de feature (LSA e Word2Vec). Defini funções para cada uma das etapas da transformação, as mesmas são:
 
-### 3.2.1. Transformar todos os comentários para letras minúculas;
-### 3.2.2. Remover pontuações;
-### 3.2.3. Transformar emojis para códigos. Exemplo: 🙇 para :pessoa_fazendo_reverencia:
-### 3.2.4. Normalização do texto em UTF-8
-### 3.2.5. Remoção de stop words (excessão a palavra "não")
-### 3.2.6. Estematização das palavras. Exemplo: "comprar" para "compr" 
-### 3.2.7. Remoção de excesso de espaços (\n)
+- Transformar todos os comentários para letras minúculas;
+- Remover pontuações;
+- Transformar emojis para códigos. Exemplo: 🙇 para :pessoa_fazendo_reverencia:
+- Normalização do texto em UTF-8
+- Remoção de stop words
+- Estematização das palavras. Exemplo: "comprar" para "compr" 
+- Remoção de excesso de espaços (\n)
 
 
 ```python
@@ -468,11 +442,7 @@ def remove_punctuation(dfText):
 
     regex = re.compile('[%s]' % re.escape(string.punctuation)) #see documentation here: http://docs.python.org/2/library/string.html
 
-
-
     tokenized_docs_no_punctuation = []
-
-
 
     for review in dfText:
 
@@ -494,8 +464,6 @@ def remove_punctuation(dfText):
 
                 new_review = new_review + " "
 
-        
-
         tokenized_docs_no_punctuation.append(new_review)
 
     return tokenized_docs_no_punctuation
@@ -512,13 +480,9 @@ def unicode_emoji(dfText):
 
     return dfText
 
-
-
 def normalize_utf8(dfText):
 
     return dfText.str.normalize("NFKD").str.encode("ascii", errors="ignore").str.decode("utf8")
-
-
 
 def removing_stop_words(dfText):
 
@@ -527,9 +491,7 @@ def removing_stop_words(dfText):
     nltk.download('stopwords')
 
     stopwords = nltk.corpus.stopwords.words('portuguese') # removing stop words
-
     
-
     stopwords.append('q')
 
     stopwords.append('pra')
@@ -544,8 +506,6 @@ def removing_stop_words(dfText):
 
     stopwords['normalized'] = stopwords['normalized'].str.normalize("NFKD").str.encode("ascii", errors="ignore").str.decode("utf8")
 
-
-
     stopword_data = []
 
     for idx,review in enumerate(dfText):
@@ -559,16 +519,8 @@ def removing_stop_words(dfText):
             if  not stopwords['normalized'].str.match('^'+word+'$').any():
 
                 new_phrase = new_phrase + " " + word
-
-
-
         stopword_data.append(new_phrase)
-
-
-
     return stopword_data
-
-
 
 def portuguese_stemmer(dfText):
 
@@ -578,19 +530,12 @@ def portuguese_stemmer(dfText):
 
     stemmer = Stemmer.Stemmer('portuguese')
 
-
-
     stemmer_docs = []
 
     for phrase in dfText:
-
         stemmer_docs.append(' '.join(stemmer.stemWords(phrase.split(" "))))
 
-
-
     return stemmer_docs
-
-
 
 def excess_space_remover(dfText):
 
@@ -613,7 +558,6 @@ def lower_case(dfText):
     return dfText.str.lower()
 ```
 
-
 ```python
 df['transformed_comment'] = lower_case(df['comment']) 
 
@@ -632,7 +576,7 @@ df['transformed_comment'] = excess_space_remover(df['transformed_comment'])
 
 # 4 Análise Exploratória
 
-Após o tratamento das informações algumas análises foram feitas a fim de entender os dados. 
+Após o tratamento das informações, algumas análises foram feitas a fim de entender os dados. 
 
 
 ```python
@@ -644,14 +588,11 @@ axes[0].set_title("Histograma do tamanho de texto por comentário")
 
 df["comment-len"].hist(ax=axes[0], bins=10)
 
-
-
 df_grouped = df.groupby("final_type").agg({'comment-len': 'mean'}).reset_index()
 
 df_grouped['desc'] = ["Negativo", "Neutro", "Positivo"]
 
 df_grouped = df_grouped.rename(df_grouped['desc'])
-
 
 
 df_grouped.plot.bar(
@@ -672,8 +613,6 @@ df_grouped.plot.bar(
 
 plt.show()
 ```
-
-
     
 ![svg](youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_30_0.svg)
     
@@ -697,14 +636,12 @@ fig = df['final_type'].value_counts(normalize=True).plot.pie(
 
         label="")
 
-
-
 fig.axes.title.set_size(20)
 ```
 
 ![svg](youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_32_0.svg)
     
-Nota-se uma quantidade muito baixa de comentários negativos em nosso escopo de dados, além de uma quantidade muito grande de comentários positivos. Técnicas de balanceamento deverão ser utilizadas nesse modelo.
+Nota-se uma quantidade muito baixa de comentários negativos em nosso escopo de dados, além de uma quantidade muito grande de comentários positivos. Técnicas de balanceamento foram utilizadas nesse modelo.
 
 ```python
 wc = WordCloud(background_color='black', width = 3000, height = 2000, colormap='Set2', collocations=False)
@@ -724,8 +661,6 @@ plt.show()
     
 ![svg](youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_34_0.svg)
     
-
-
 # 5. Modelagem
 
 Através da análise exploratória, entende-se que a utilização de um método de balancemento dos dados será necessário. Para isso criei uma função genérica que aplica o método oversample aos dados que serão utilizados posteriormente.
@@ -734,47 +669,18 @@ Através da análise exploratória, entende-se que a utilização de um método 
 
 ```python
 def overSamplDef(X_res, y_res, overMethod, sampling_strategy='auto'):
-
     from collections import Counter
-
     from imblearn.over_sampling import RandomOverSampler
-
     from imblearn.over_sampling import SMOTE 
-
-    # from imblearn.over_sampling import SMOTENC
-
     from imblearn.over_sampling import SMOTEN
-
     from imblearn.over_sampling import ADASYN 
-
     from imblearn.over_sampling import BorderlineSMOTE
-
     from imblearn.over_sampling import KMeansSMOTE
-
     from imblearn.over_sampling import SVMSMOTE 
-
-    
-
-    # print(sampling_strategy)
-
-
-
     print('Before dataset shape %s' % sorted(Counter(y_res).items()))
-
     ros = overMethod(sampling_strategy=sampling_strategy)
-
-    # ros = BorderlineSMOTE()
-
-    # sampling_strategy='minority'
-
-    # ros = SMOTE()
-
     X_res, y_res = ros.fit_resample(X_res, y_res)
-
-
-
     print('Resampled dataset shape %s' % sorted(Counter(y_res).items()))
-
     print("-------------------------------------------")
 
     return X_res, y_res
@@ -782,15 +688,12 @@ def overSamplDef(X_res, y_res, overMethod, sampling_strategy='auto'):
 
 ## 5.2 Criando Freatures
 
-Por meio de alguns testes e análises efetuadas em "6.youtube-comments-types-analysis.ipynb" concluiu-se que os melhores métodos de criação de freatures a serem utilizados são o LSA e Word2Vec pois os mesmos trazem os melhores resultados quando somados ao oversample. 
-
+Por meio de alguns testes e análises efetuadas em [6.youtube-comments-types-analysis.ipynb](https://github.com/ErycM/electronics-sentiment-analysis-on-youtube-comments/blob/main/6.youtube-comments-types-analysis.ipynb) concluiu-se que os melhores métodos de criação de freatures a serem utilizados são o LSA e Word2Vec pois os mesmos trazem os melhores resultados quando somados ao oversample. 
 
 ```python
 required_columns = 'transformed_comment'
 
 le = LabelEncoder()
-
-
 
 X = df[required_columns]
 
@@ -799,41 +702,23 @@ y = le.fit_transform(df['final_type'])
 
 ### 5.2.1 Word2Vec
 
-
 ```python
 all_commnets_list = df[required_columns].to_list()
 
-
-
 tokenized_words = []
 
-
-
 for i in range(len(all_commnets_list)):
-
-    #tokenize the text to list of sentences
-
     tokenized_sentence = nltk.sent_tokenize(all_commnets_list[i])
-
-    #tokenize the list of sentences to list of words
-
     tokenized = [nltk.word_tokenize(sentence) for sentence in tokenized_sentence]
-
-    #remove the stop words from the text
 
     for y, _ in enumerate(tokenized):
 
         tokenized_words.append([word for word in tokenized[y]])
 
-
-
 all_commnets_list = tokenized_words
-
-
 
 model = Word2Vec(all_commnets_list, min_count=1)
 ```
-
 
 ```python
 model.wv.save('eletronics_model.bin')
@@ -864,8 +749,6 @@ for phrase in all_commnets_list:
 
   word2vec_doc_vec = word2vec_doc_vec.append(doc_vector, ignore_index = True)
 
-
-
 word2vec_doc_vec.shape
 
 X_w2v = word2vec_doc_vec
@@ -876,10 +759,7 @@ X_w2v.shape
 ```
     (4907, 100)
 
-
-
 ### 5.2.2 LSA
-
 
 ```python
 # tfidf_v = TfidfVectorizer(ngram_range = (3, 3))
@@ -900,13 +780,11 @@ X_lsa.shape
 ```
     (4907, 100)
 
-
-
 Em ambos os métodos 100 features foram criadas para a classificação dos comentários.
 
 # 5.3 Treinando o Modelo
 
-Para o treinamento do modelo a partir das features criadas o métodos LinearSVC trouxe o melhor resultado de recall comparado aos demais métodos utilizados em "6.youtube-comments-types-analysis.ipynb". Para a execução do oversample o método Adaptive Synthetic (ADASYN) me trouxe o melhor resultado pois o mesmo controla com melhor eficácia a replicação de outliers no meu escopo de dados em relação ao SMOTE. A estratégia utilizada para a criação de novos dados com o ADASYN foi a partir do "minority" que equilibra somente os dados de menor quantidade com os de maior quantidade, evitando qualquer alteração nos dados de categoria neutra que não são interessantes para a nossa análise. 
+Para o treinamento do modelo a partir das features criadas o método LinearSVC trouxe o melhor resultado de recall comparado aos demais métodos utilizados em [6.youtube-comments-types-analysis.ipynb](https://github.com/ErycM/electronics-sentiment-analysis-on-youtube-comments/blob/main/6.youtube-comments-types-analysis.ipynb). Para a execução do oversample o método Adaptive Synthetic (ADASYN) me trouxe o melhor resultado pois o mesmo controla com melhor eficácia a replicação de outliers no meu escopo de dados em relação ao SMOTE. A estratégia utilizada para a criação de novos dados com o ADASYN foi a partir do "minority" que equilibra somente os dados de menor quantidade com os de maior quantidade, evitando qualquer alteração nos dados de categoria neutra que não são interessantes para a minha análise. 
 
 
 ```python
@@ -953,18 +831,14 @@ y_pred_train_lsa = model_lsa.predict(X_train_lsa)
     Before dataset shape [(-1, 196), (0, 1309), (1, 2420)]
     Resampled dataset shape [(-1, 2406), (0, 1309), (1, 2420)]
     -------------------------------------------
-    
-
 
 ```python
 target_names = ['Negativo', 'Neutro', 'Positivo']
 
 print("SVC - Report W2V")
-
 print(classification_report(y_test_w2v, y_pred_w2v, target_names=target_names))
 
 print("SVC - Report LSA")
-
 print(classification_report(y_test_lsa, y_pred_lsa, target_names=target_names))
 ```
 
@@ -994,20 +868,17 @@ print(classification_report(y_test_lsa, y_pred_lsa, target_names=target_names))
 ![svg](youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_55_1.svg)
 ![svg](youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_55_2.svg)
     
-Após a execução do oversample e depois de treinar o modelo com LinearSVC obtivemos os valores de 67% de recall para negativos e 60% de recall para positivos em word2vec. Para o método LSA, obtivemos um valor mais elevado de recall em negativos (83%) e menor em positivos (42%), porém a fim de equilibrar nossos resultados em ambos os atributos, o word2vec é o mais efiente. 
+Após a execução do oversample e depois de treinar o modelo com LinearSVC obtivemos os valores de 67% de recall para negativos e 60% de recall para positivos em word2vec. Para o método LSA, tivemos um valor mais elevado de recall em negativos (83%) e menor em positivos (42%), porém para equilibrar nossos resultados em ambos os atributos o word2vec é o mais adequado. 
 
 # 5.3 Concretizando resultados
 
-A fim entendermos qual é o resultado concreto do nosso modelo, efetuei o treino do modelo 600 vezes a fim de obter resultados mais precisos. 
+A fim entender qual é o resultado concreto do meu modelo, efetuei o mesmo treino 600 vezes obtendo resultados mais precisos. 
 
 ```python
 model_report = pd.DataFrame()
 
 predict_w2v_traning = []
-
 predict_lsa_traning = []
-
-
 
 for exec in range(600):
 
@@ -1026,17 +897,13 @@ for exec in range(600):
     svc = LinearSVC()
 
     X_train_w2v, X_test_w2v, y_train_w2v, y_test_w2v = train_test_split(X_w2v, df['final_type'], test_size = .2)
-
     X_train_w2v, y_train_w2v = overSamplDef(X_train_w2v, y_train_w2v, ADASYN, sampling_strategy='minority') #SMOTE | SMOTE
 
     clf = GridSearchCV(svc, param_grid).fit(X_train_w2v, y_train_w2v)
 
     y_pred_w2v = clf.predict(X_test_w2v)
 
-
-
     X_train_lsa, X_test_lsa, y_train_lsa, y_test_lsa = train_test_split(X_lsa, df['final_type'], test_size = .2)
-
     X_train_lsa, y_train_lsa = overSamplDef(X_train_lsa, y_train_lsa, ADASYN, sampling_strategy='minority') #SMOTE | SMOTE
 
     clf = GridSearchCV(svc, param_grid).fit(X_train_lsa, y_train_lsa)
@@ -1054,26 +921,21 @@ for exec in range(600):
 
 
 model_w2v_report = pd.json_normalize(predict_w2v_traning)
-
 model_lsa_report = pd.json_normalize(predict_lsa_traning)
 
 ```python
 print("Word2Vec Negative Recall ", model_w2v_report['-1.recall'].mean())
-
 print("Word2Vec Positive Recall ", model_w2v_report['1.recall'].mean())
 
 print("Word2Vec Negative Precision ", model_w2v_report['-1.precision'].mean())
-
 print("Word2Vec Positive Precision ", model_w2v_report['1.precision'].mean())
 
 print("------------------------------------------------")
 
 print("LSA Negative Recall ", model_lsa_report['-1.recall'].mean())
-
 print("LSA Positive Recall ", model_lsa_report['1.recall'].mean())
 
 print("LSA Negative Precision ", model_lsa_report['-1.precision'].mean())
-
 print("LSA Positive Precision ", model_lsa_report['1.precision'].mean())
 ```
 
@@ -1087,36 +949,22 @@ print("LSA Positive Precision ", model_lsa_report['1.precision'].mean())
     LSA Negative Precision  0.06515107584511744
     LSA Positive Precision  0.6489308944833397
     
-
 Para ambas as features, obtemos resultados parecidos aos executados anteriormente. Com atenção os nossos atributos principais da feature word2vec de 67% para negativos e 59% para positivos. 
-
 
 ```python
 fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(30,15))
 
 axes[0][0].set_title("Histograma de recall para negativos em word2vec")
-
 model_w2v_report['-1.recall'].plot.hist(ax=axes[0][0], color="#dc3545")
 
-
-
 axes[0][1].set_title("Histograma de recall para positivos em word2vec")
-
 model_w2v_report['1.recall'].plot.hist(ax=axes[0][1], color="#218838")
 
-
-
 axes[1][0].set_title("Histograma de precision para negativos em word2vec")
-
 model_w2v_report['-1.precision'].plot.hist(ax=axes[1][0], color="#dc3545")
 
-
-
 axes[1][1].set_title("Histograma de precision para positivos em word2vec")
-
 model_w2v_report['1.precision'].plot.hist(ax=axes[1][1], color="#218838")
-
-
 ```
     
 ![svg](youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_65_1.svg)
