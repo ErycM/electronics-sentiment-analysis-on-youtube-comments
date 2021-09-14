@@ -1,25 +1,5 @@
 # Análise de sentimento - Comentários de Análises de Celulares no Youtube
 
-```python
-comments_site_analysis = pd.read_csv('src/comments_site_analysis.csv')
-```
-
-
-```python
-phones_colleted = pd.read_csv("src/phones_colleted.csv")
-```
-
-
-```python
-#default transformation
-
-df = pd.read_csv('src/video_comments_final_types2.csv')
-
-df['comment'] = df['comment'].astype(str)
-
-df['final_type'] = df['final_type'].astype(int)
-```
-
 # 1 Exposição do problema
 
 Observando o volume de análises de celulares eletrônicos no youtube e sua popularidade de comentários, notei a possibilidade de efetuar uma categorização dos comentários desses vídeos a fim de conseguir uma indicação sobre quais os celulares são mais bem ou mal recebidos pelo público. Trazendo uma expectativa popular sobre os mesmos. 
@@ -49,19 +29,6 @@ phones_colleted
 
 
 <div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -214,62 +181,24 @@ Considerei que a melhor maneira de encontrar os reviews dos produtos é por meio
 ## 2.3 Coleta das informações
 
 Como evidenciado na exposição do problema não tínhamos uma forma existente de coleta desses comentários já classificados no youtube. Para isso criou-se então um site de classificação dos comentários aberto ao público. O mesmo pode ser visualizado através do [link](https://comments-reviews-web-app.vercel.app/). A mesma tem a seguinte interface:
-
-
-```python
-from IPython.display import display, Image
-
-display(Image(filename='src/site_example.png'))
-```
-
-
-    
+  
 ![png](youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_15_0.png)
     
-
-
 A interface contem os seguintes requisitos funcionais e técnicos:
 
-### 2.3.1 Criada em Reactjs e os dados são armazenados por meio do Firebase;
+- Criada em Reactjs e os dados são armazenados por meio do Firebase;
 
+- A seleção dos comentários para os usuários foi de forma aleatória e com pesos. Onde os comentários menos avaliados pelos usuários tinham um peso maior para serem trazidos com maior probabilidade antes dos mais avaliados;
 
+- Cada usuário que fez a avaliação será diferenciado pelo IP ou um timestamp da página aberta no momento a fim de contabilizar o experimento;
 
-### 2.3.2 A seleção dos comentários para os usuários foi de forma aleatória e com pesos. Onde os comentários menos avaliados pelos usuários tinham um peso maior para serem trazidos com maior probabilidade antes dos mais avaliados;
-
-
-
-### 2.3.3 Cada usuário que fez a avaliação será diferenciado pelo IP ou um timestamp da página aberta no momento a fim de contabilizar o experimento;
-
-
-
-### 2.3.4 Um total de 10 mil comentários foram armazenados na ferramenta.
+- Um total de 10 mil comentários foram armazenados na ferramenta.
 
 # 3.1 Preparação dos dados
 
 Após a criação do site para a coleta de avaliações, monitorei os dados coletados e avaliados pelos usuários. Meu número final de comentários avaliados foi o evidenciado abaixo: 
 
-
-```python
-comments_site_analysis
-```
-
-
-
-
 <div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -310,32 +239,9 @@ comments_site_analysis
 
 Com os comentários avaliados, efetuei então a coleta dos dados. Os detalhes do mesmo utilizando a API do firebase podem ser encontrados em "5.youtube-review-comment-collect.ipynb". O mesmo não será exposto aqui a fim de condensar o processo.
 
-
-
 Após a coleta dos dados do Firebase e sua manipulação, os seguintes dados foram coletados:
 
-
-```python
-df
-```
-
-
-
-
 <div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -549,29 +455,25 @@ df
 <p>4906 rows × 14 columns</p>
 </div>
 
-
-
 Onde "final_type" corresponde a classificação do comentário positivo (1), neutro(0) ou negativo(-1)
 
 # 3.2 Transformação com técnicas de NLP
 
 Meu objetivo aqui é padronizar meus comentários a fim de aplicar as tecnicas de criação de feature (LSA e Word2Vec). Defini funções para cada uma das etapadas da transformação, as mesmas são:
 
+- Transformar todos os comentários para letras minúculas;
 
+- Remover pontuações;
 
-### 3.2.1. Transformar todos os comentários para letras minúculas;
+- Transformar emojis para códigos. Exemplo: 
 
-### 3.2.2. Remover pontuações;
+- Normalização do texto em UTF-8
 
-### 3.2.3. Transformar emojis para códigos. Exemplo: 
+- Remoção de stop words (excessão a palavra "não")
 
-### 3.2.4. Normalização do texto em UTF-8
+- Estematização das palavras. Exemplo: 
 
-### 3.2.5. Remoção de stop words (excessão a palavra "não")
-
-### 3.2.6. Estematização das palavras. Exemplo: 
-
-### 3.2.7. Remoção de excesso de espaços (\n)
+- Remoção de excesso de espaços (\n)
 
 
 ```python
@@ -750,27 +652,14 @@ def lower_case(dfText):
 ```python
 exception = {'!': ':exclamacao:', '?': ':interrogacao:'}
 
-
-
 df['transformed_comment'] = lower_case(df['comment']) 
-
 df['transformed_comment'] = remove_punctuation(df['transformed_comment'], exception) 
-
 df['transformed_comment'] = unicode_emoji(df['transformed_comment'], False)
-
 df['transformed_comment'] = normalize_utf8(df['transformed_comment'])
-
 df['transformed_comment'] = removing_stop_words(df['transformed_comment'])
-
 df['transformed_comment'] = portuguese_stemmer(df['transformed_comment'])
-
 df['transformed_comment'] = excess_space_remover(df['transformed_comment'])
 ```
-
-    [nltk_data] Downloading package stopwords to
-    [nltk_data]     C:\Users\erycm\AppData\Roaming\nltk_data...
-    [nltk_data]   Package stopwords is already up-to-date!
-    
 
 # 4 Análise Exploratória
 
@@ -782,19 +671,11 @@ Após o tratamento das informações algumas análises foram feitas a fim de ent
 ```python
 fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(15,4))
 
-
-
 exclamation = df['final_type'].loc[df['comment'].str.find('!') != -1].value_counts()/df['final_type'].value_counts()*100
-
 exclamation = pd.DataFrame([round(exclamation[-1],2),round(exclamation[1],2),round(exclamation[0],2)], index=['Negativo', 'Positivo', 'Neutro'])
 
-
-
-interrogation = df['final_type'].loc[df['comment'].str.find('!') != -1].value_counts()/df['final_type'].value_counts()*100
-
+interrogation = df['final_type'].loc[df['comment'].str.find('?') != -1].value_counts()/df['final_type'].value_counts()*100
 interrogation = pd.DataFrame([round(interrogation[-1],2),round(interrogation[1],2),round(interrogation[0],2)], index=['Negativo', 'Positivo', 'Neutro'])
-
-
 
 exclamation[0].plot.bar(
 
@@ -805,8 +686,6 @@ exclamation[0].plot.bar(
     ax=ax[0],
 
     rot=1)
-
-
 
 interrogation[0].plot.bar(
 
@@ -821,123 +700,60 @@ interrogation[0].plot.bar(
 
 
 ax[0].get_yaxis().set_ticks([])
-
 ax[0].grid(False)
 
-
-
 ax[1].get_yaxis().set_ticks([])
-
 ax[1].grid(False)
 
-
-
 ax[0].set(frame_on=False) 
-
 ax[1].set(frame_on=False) 
 
-
-
 ax[0].set_title("Percentual de exclamação (!) por comentário (%)", fontsize=14, color='#4f4e4e', y=1.12)
-
 ax[0].bar_label(ax[0].containers[0], padding=2, fontsize=12, color='#4f4e4e')
 
-
-
-ax[1].set_title("Percentual de exclamação (?) por comentário (%)", fontsize=14, color='#4f4e4e', y=1.12)
-
+ax[1].set_title("Percentual de Interrogação (?) por comentário (%)", fontsize=14, color='#4f4e4e', y=1.12)
 ax[1].bar_label(ax[1].containers[0], padding=2, fontsize=12, color='#4f4e4e')
 ```
-
-
-
-
-    [Text(0, 2, '16.12'), Text(0, 2, '13.26'), Text(0, 2, '9.97')]
-
-
-
-
-    
+ 
 ![svg](youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_31_1.svg)
-    
+  
+Nota-se que a quantidade de comentários com exclamação é maior para os negativo e consideravelmente menos para neutros, além disso o percentual de interrogação para neutros é bastanta alto também e muito baixo para negativos. Os dois serão considerados nas features do modelo. 
 
-
-## 4.2 Emotes não são muito relevantes para a análise
-
+## 4.2 Emotes podem ser relevantes para a análise
 
 ```python
 emojis_type = []
-
 emojis_count = []
-
 emojis = []
-
 types = [-1, 0, 1]
 
-
-
-# del emoji.UNICODE_EMOJI['pt']['*️⃣']
-
-
-
 for emoj in emoji.UNICODE_EMOJI['pt']:
-
     emojisCont = df['comment'].loc[df['final_type'] == ty].str.count(emoj)
-
-
-
     for ty in types:
 
         emojisCont = df['comment'].loc[df['final_type'] == ty].str.count(emoj).sum()
-
         emojis_count.append(emojisCont)
-
         emojis_type.append(ty)
-
         emojis.append(emoj)
 
-
-
-
-
 emoji_data = {'count': emojis_count, 'type': emojis_type}
-
 emoji_data = pd.DataFrame(emoji_data, index=emojis)
 
-
-
 emoji_data['count'].loc[(emoji_data['type'] == -1)].sort_values(ascending=False)[:10]
-
 emoji_data['count'].loc[(emoji_data['type'] == 0)].sort_values(ascending=False)[:10]
-
 emoji_data['count'].loc[(emoji_data['type'] == 1)].sort_values(ascending=False)[:10]
 
-
-
 negative = emoji_data['count'].loc[(emoji_data['type'] == -1)].sort_values(ascending=False)[:10].reset_index()
-
 negative['Negativo'] = negative['index'] + ' ' + negative['count'].astype(str)
 
 neutro = emoji_data['count'].loc[(emoji_data['type'] == 0)].sort_values(ascending=False)[:10].reset_index()
-
 neutro['Neutro'] = neutro['index'] + ' ' + neutro['count'].astype(str)
 
 positive = emoji_data['count'].loc[(emoji_data['type'] == 1)].sort_values(ascending=False)[:10].reset_index()
-
 positive['Positivo'] = positive['index'] + ' ' + positive['count'].astype(str)
 
-
-
 types_emojis = {'Negativo' :negative['Negativo'], 'Neutro': neutro['Neutro'], 'Positivo': positive['Positivo']}
-
-
-
 types_emojis = pd.DataFrame(types_emojis)
-
-
-
-types_emojis
-
 
 ```
 
@@ -1038,36 +854,22 @@ types_emojis
 ```python
 emojis_line_count = []
 
-
-
 for comment in df['comment']:
 
     hasEmoji = False
-
     for emoj in emoji.UNICODE_EMOJI['pt']:
-
         if emoj in comment:
-
             hasEmoji = True
-
     emojis_line_count.append(hasEmoji)
-
-
 
 df['has_emoji'] = emojis_line_count
 ```
 
-
 ```python
 fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(10,5))
 
-
-
 emojis_percent = df['final_type'].loc[df['has_emoji']].value_counts()/df['final_type'].value_counts()*100
-
 emojis_percent = pd.DataFrame([round(emojis_percent[1],2),round(emojis_percent[-1],2),round(emojis_percent[0],2)], index=['Positivo', 'Negativo', 'Neutro'])
-
-
 
 emojis_percent[0].plot.barh(
 
@@ -1077,110 +879,46 @@ emojis_percent[0].plot.barh(
 
     rot=1)
 
-
-
-# title="Distribuição dos comentários por classificação (%)"
-
-
-
-# ax.set_axisbelow(True)
-
-# ax.grid(color='gray', linestyle='dashed')
-
-# ax.axis("off")
-
-ax.grid(False)
-
-ax.get_xaxis().set_ticks([])
-
-ax.set(frame_on=False) 
-
-
-
-# ax.set_axisbelow(True)
-
-# ax.grid(color='gray', linestyle='dashed')
-
-# ax.axis("off")
-
-
-
-
-
 ax.set_title("Percentual de comentários com emojis (%)", fontsize=16, color='#4f4e4e')
-
 ax.bar_label(ax.containers[0], padding=2, fontsize=12, color='#4f4e4e')
 ```
-
-
-
-
-    [Text(2, 0, '12.18'), Text(2, 0, '9.5'), Text(2, 0, '9.35')]
-
-
-
-
     
-![svg](youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_35_1.svg)
+![svg](youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_36_1.svg)
     
-
+Apesar da pequena a quantidade de emojis por comentários, os emojis entre as classificações são de maioria distintos e podem ser relevantes como features.
 
 ## 4.3 Quantidade muito baixa de comentários negativos
 
 Nota-se uma quantidade muito baixa de comentários negativos em meu escopo de dados, além de uma quantidade muito grande de comentários positivos. Técnicas de balanceamento de classes serão utilizadas nesse modelo.
 
-
 ```python
 import seaborn as sns
 
 f_type = df['final_type'].value_counts(normalize=True).reset_index()
-
 f_type['type'] = ['Positivo', 'Neutro', 'Negativo']
-
 f_type = f_type.drop('index', 1)
 
-
-
 plt.rcParams['figure.dpi'] = 100
-
 sns.set(style="whitegrid")
 
 fig, ax = plt.subplots(figsize=(12,4))
-
 sns.barplot(data=f_type, x="type", y="final_type", palette=['#218838','#ffc107','#dc3545'])
 
 plt.xlabel('Classificação', size=10, color='#4f4e4e')
-
 plt.ylabel('')
-
 plt.title('Distribuição dos comentários por classificação (%)', size=15, color='#4f4e4e')
-
-
-
 plt.yticks([], [])
-
 plt.text(x=0, y=0.01, s="61.93", 
-
                  color='white', fontsize=15, horizontalalignment='center')
-
 plt.text(x=1, y=0.01, s="33.14", 
-
                  color='white', fontsize=15, horizontalalignment='center')
-
 plt.text(x=2, y=0.01, s="4.93", 
-
                  color='white', fontsize=15, horizontalalignment='center')
-
 sns.despine(left=True)
 ```
 
-
+![svg](youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_40_0.svg)
     
-![svg](youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_38_0.svg)
-    
-
-
-
 ```python
 wc = WordCloud(background_color='black', width = 3000, height = 2000, colormap='Set2', collocations=False)
 
@@ -1188,27 +926,18 @@ wc = WordCloud(background_color='black', width = 3000, height = 2000, colormap='
 
 wc.generate(' '.join(df['transformed_comment']))
 
-
-
 plt.axis("off")
-
 plt.imshow(wc, interpolation="bilinear")
-
 plt.show()
 ```
-
-
     
-![svg](youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_39_0.svg)
+![svg](youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_41_0.svg)
     
-
-
 # 5. Modelagem
 
 Através da análise exploratória, entende-se que a utilização de um método de balancemento dos dados será necessário. Para isso criei uma função genérica que aplica o método oversample aos dados que serão utilizados posteriormente.
 
 ## 5.1 Imbalance Apply
-
 
 ```python
 def overSamplDef(X_res, y_res, overMethod, sampling_strategy='auto'):
@@ -1262,60 +991,40 @@ def overSamplDef(X_res, y_res, overMethod, sampling_strategy='auto'):
 
 Por meio de alguns testes e análises efetuadas em [6.youtube-comments-types-analysis.ipynb](https://github.com/ErycM/electronics-sentiment-analysis-on-youtube-comments/blob/main/6.youtube-comments-types-analysis.ipynb) concluiu-se que os melhores métodos de criação de freatures a serem utilizados são o LSA e Word2Vec pois os mesmos trazem os melhores resultados quando somados ao oversample. 
 
-
 ```python
 required_columns = 'transformed_comment'
-
 le = LabelEncoder()
-
-
-
 X = df[required_columns]
-
 y = le.fit_transform(df['final_type'])
 ```
 
 ### 5.2.1 Word2Vec
 
-
 ```python
 all_commnets_list = df[required_columns].to_list()
-
-
-
 tokenized_words = []
-
-
 
 for i in range(len(all_commnets_list)):
 
     #tokenize the text to list of sentences
-
     tokenized_sentence = nltk.sent_tokenize(all_commnets_list[i])
-
+    
     #tokenize the list of sentences to list of words
-
     tokenized = [nltk.word_tokenize(sentence) for sentence in tokenized_sentence]
-
+    
     #remove the stop words from the text
-
     for y, _ in enumerate(tokenized):
-
         tokenized_words.append([word for word in tokenized[y]])
 
 
 
 all_commnets_list = tokenized_words
 
-
-
 model = Word2Vec(all_commnets_list, min_count=1)
 ```
 
-
 ```python
 model.wv.save('src/eletronics_model.bin')
-
 embeddings = KeyedVectors.load('src/eletronics_model.bin')
 ```
 
@@ -1324,43 +1033,23 @@ embeddings = KeyedVectors.load('src/eletronics_model.bin')
 word2vec_doc_vec = pd.DataFrame()
 
 for phrase in all_commnets_list:
-
   temp = pd.DataFrame()
-
-
-
   for word in phrase:
-
     try:
-
       word_vec = embeddings[word]
-
       temp = temp.append(pd.Series(word_vec), ignore_index = True)
-
     except:
-
       pass
-
   doc_vector = temp.mean()
-
   word2vec_doc_vec = word2vec_doc_vec.append(doc_vector, ignore_index = True)
-
-
-
-word2vec_doc_vec.shape
 
 X_w2v = word2vec_doc_vec
 ```
 
-
 ```python
 X_w2v.shape
 ```
-
-
-
-
-    (4906, 100)
+(4906, 100)
 
 
 
@@ -1380,16 +1069,10 @@ svd=TruncatedSVD(n_components=100, n_iter=20, algorithm='randomized')
 
 X_lsa=svd.fit_transform(matrixTFIDF) 
 ```
-
-
 ```python
 X_lsa.shape
 ```
-
-
-
-
-    (4906, 100)
+(4906, 100)
 
 
 
@@ -1397,31 +1080,20 @@ Em ambos os métodos 100 features foram criadas para a classificação dos comen
 
 # 5.3 Treinando o Modelo
 
-Para o treinamento do modelo a partir das features criadas o métodos LinearSVC trouxe o melhor resultado de recall comparado aos demais métodos utilizados em [6.youtube-comments-types-analysis.ipynb](https://github.com/ErycM/electronics-sentiment-analysis-on-youtube-comments/blob/main/6.youtube-comments-types-analysis.ipynb). Para a execução do oversample o método Adaptive Synthetic (ADASYN) me trouxe o melhor resultado pois o mesmo controla com melhor eficácia a replicação de outliers no meu escopo de dados em relação ao SMOTE. A estratégia utilizada para a criação de novos dados com o ADASYN foi a partir do "minority" que equilibra somente os dados de menor quantidade com os de maior quantidade, evitando qualquer alteração nos dados de categoria neutra que não são interessantes para a nossa análise. 
-
+Para o treinamento do modelo a partir das features criadas o métodos LinearSVC trouxe o melhor resultado de recall comparado aos demais métodos utilizados em [6.youtube-comments-types-analysis.ipynb](https://github.com/ErycM/electronics-sentiment-analysis-on-youtube-comments/blob/main/6.youtube-comments-types-analysis.ipynb). Para a execução do oversample o método Adaptive Synthetic (ADASYN) me trouxe o melhor resultado pois o mesmo controla com melhor eficácia a replicação dos dados em regiões com maior densidade da minha amostra minoritária, evitando replicações desnecessárias em outliers. A estratégia utilizada para a criação de novos dados com o ADASYN foi a partir do "minority" que equilibra somente os dados de menor quantidade com os de maior quantidade, evitando qualquer alteração nos dados de categoria neutra que não são interessantes para a análise. 
 
 ```python
 param_grid = [
-
   {'C': [1, 10, 100, 1000]}
-
  ] 
 
 svc = SVC()
 
-
-
 X_train_w2v, X_test_w2v, y_train_w2v, y_test_w2v = train_test_split(X_w2v, df['final_type'], test_size = .20)
-
 X_train_w2v, y_train_w2v = overSamplDef(X_train_w2v, y_train_w2v, ADASYN, sampling_strategy='minority') 
-
 model_w2v = GridSearchCV(svc, param_grid).fit(X_train_w2v, y_train_w2v)
-
 y_pred_w2v = model_w2v.predict(X_test_w2v)
-
 y_pred_train_w2v = model_w2v.predict(X_train_w2v)
-
-
 
 param_grid = [
 
@@ -1431,195 +1103,117 @@ param_grid = [
 
 svc = SVC()
 
-
-
 X_train_lsa, X_test_lsa, y_train_lsa, y_test_lsa = train_test_split(X_lsa, df['final_type'], test_size = .20)
-
 X_train_lsa, y_train_lsa = overSamplDef(X_train_lsa, y_train_lsa, ADASYN, sampling_strategy='minority') 
-
 model_lsa = GridSearchCV(svc, param_grid).fit(X_train_lsa, y_train_lsa)
-
 y_pred_lsa = model_lsa.predict(X_test_lsa)
-
 y_pred_train_lsa = model_lsa.predict(X_train_lsa)
 ```
-
-    Before dataset shape [(-1, 182), (0, 1272), (1, 2470)]
-    Resampled dataset shape [(-1, 2421), (0, 1272), (1, 2470)]
+    Before dataset shape [(-1, 188), (0, 1294), (1, 2442)]
+    Resampled dataset shape [(-1, 2436), (0, 1294), (1, 2442)]
     -------------------------------------------
-    Before dataset shape [(-1, 203), (0, 1304), (1, 2417)]
-    Resampled dataset shape [(-1, 2444), (0, 1304), (1, 2417)]
+    Before dataset shape [(-1, 204), (0, 1284), (1, 2436)]
+    Resampled dataset shape [(-1, 2455), (0, 1284), (1, 2436)]
     -------------------------------------------
     
-
-
 ```python
 target_names = ['Negativo', 'Neutro', 'Positivo']
 
-
-
 print("SVC - Report W2V")
-
 print(classification_report(y_test_w2v, y_pred_w2v, target_names=target_names))
 
-
-
 print("SVC - Report LSA")
-
 print(classification_report(y_test_lsa, y_pred_lsa, target_names=target_names))
 ```
-
     SVC - Report W2V
                   precision    recall  f1-score   support
     
-        Negativo       0.09      0.60      0.16        60
-          Neutro       0.00      0.00      0.00       353
-        Positivo       0.57      0.60      0.59       569
+        Negativo       0.09      0.65      0.15        54
+          Neutro       0.25      0.00      0.01       331
+        Positivo       0.62      0.60      0.61       597
     
-        accuracy                           0.38       982
-       macro avg       0.22      0.40      0.25       982
-    weighted avg       0.34      0.38      0.35       982
+        accuracy                           0.40       982
+       macro avg       0.32      0.42      0.26       982
+    weighted avg       0.47      0.40      0.38       982
     
     SVC - Report LSA
                   precision    recall  f1-score   support
     
-        Negativo       0.06      0.56      0.10        39
-          Neutro       0.36      0.22      0.27       321
-        Positivo       0.65      0.41      0.51       622
+        Negativo       0.06      0.58      0.11        38
+          Neutro       0.34      0.17      0.22       341
+        Positivo       0.61      0.44      0.51       603
     
-        accuracy                           0.36       982
-       macro avg       0.36      0.40      0.29       982
-    weighted avg       0.53      0.36      0.41       982
-    
-    
-
-
+        accuracy                           0.35       982
+       macro avg       0.33      0.40      0.28       982
+    weighted avg       0.49      0.35      0.39       982
+      
 ```python
 disp = plot_confusion_matrix(y_test_w2v, y_pred_w2v)
-
 disp.set_title('LSVC - W2V')
 
 disp = plot_confusion_matrix(y_test_lsa, y_pred_lsa)
-
 disp.set_title('LSVC - LSA')
 ```
-
-
-
-
-    Text(0.5, 1.0, 'LSVC - LSA')
-
-
-
-
     
-![svg](youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_60_1.svg)
+![svg](youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_62_1.svg)    
+![svg](youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_62_2.svg)
     
-
-
-
-    
-![svg](youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_60_2.svg)
-    
-
-
 Após a execução do oversample e depois de treinar o modelo com LinearSVC obtivemos os valores de aproximadamente 65% de recall para negativos e 60% de recall para positivos em word2vec. Para o método LSA, obtivemos um valor mais elevado de recall em negativos (80%) e menor em positivos (35%), porém a fim de equilibrar nossos resultados em ambos os atributos, o word2vec é o mais efiente. 
 
 # 5.3 Concretizando resultados
 
 A fim entendermos qual é o resultado concreto do nosso modelo, efetuei o treino do modelo 600 vezes a fim de obter resultados mais precisos. 
 
-
 ```python
 model_report = pd.DataFrame()
-
 predict_w2v_traning = []
-
 predict_lsa_traning = []
 
 
 
 for exec in range(600):
-
-
-
     print("Execução ", exec, " de ", 600)
-
-
-
     param_grid = [
-
         {'C': [1, 10, 100, 1000]}
-
     ] 
-
     svc = LinearSVC()
 
 
-
     X_train_w2v, X_test_w2v, y_train_w2v, y_test_w2v = train_test_split(X_w2v, df['final_type'], test_size = .2)
-
     X_train_w2v, y_train_w2v = overSamplDef(X_train_w2v, y_train_w2v, ADASYN, sampling_strategy='minority') 
-
     clf = GridSearchCV(svc, param_grid).fit(X_train_w2v, y_train_w2v)
-
     y_pred_w2v = clf.predict(X_test_w2v)
 
-
-
-    # X_train_lsa, X_test_lsa, y_train_lsa, y_test_lsa = train_test_split(X_lsa, df['final_type'], test_size = .2)
-
-    # X_train_lsa, y_train_lsa = overSamplDef(X_train_lsa, y_train_lsa, ADASYN, sampling_strategy='minority') 
-
-    # clf = GridSearchCV(svc, param_grid).fit(X_train_lsa, y_train_lsa)
-
-    # y_pred_lsa = clf.predict(X_test_lsa)
-
-
+    X_train_lsa, X_test_lsa, y_train_lsa, y_test_lsa = train_test_split(X_lsa, df['final_type'], test_size = .2)
+    X_train_lsa, y_train_lsa = overSamplDef(X_train_lsa, y_train_lsa, ADASYN, sampling_strategy='minority') 
+    clf = GridSearchCV(svc, param_grid).fit(X_train_lsa, y_train_lsa)
+    y_pred_lsa = clf.predict(X_test_lsa)
 
     svc_w2v = classification_report(y_test_w2v, y_pred_w2v, output_dict=True)
-
     predict_w2v_traning.append(svc_w2v)
 
-
-
-    # svc_lsa = classification_report(y_test_lsa, y_pred_lsa, output_dict=True)
-
-    # predict_lsa_traning.append(svc_lsa)
-
-
+    svc_lsa = classification_report(y_test_lsa, y_pred_lsa, output_dict=True)
+    predict_lsa_traning.append(svc_lsa)
 
 model_w2v_report = pd.json_normalize(predict_w2v_traning)
-
-# model_lsa_report = pd.json_normalize(predict_lsa_traning)
-
-
+model_lsa_report = pd.json_normalize(predict_lsa_traning)
 
 model_w2v_report.to_csv('src/w2v_report.csv', index=False)
-
-# model_lsa_report.to_csv('src/lsa_report2.csv', index=False)
+model_lsa_report.to_csv('src/lsa_report2.csv', index=False)
 ```
-
     Execução  0  de  600
     Before dataset shape [(-1, 190), (0, 1309), (1, 2425)]
     Resampled dataset shape [(-1, 2462), (0, 1309), (1, 2425)]
     -------------------------------------------
-    
-
-
-```python
-model_w2v_report = pd.read_csv('src/w2v_report.csv')
-
-model_lsa_report = pd.read_csv('src/lsa_report.csv')
-```
-
-
-```python
-model_w2v_report
-```
-
-
-
+    .
+    .
+    .
+    .
+    -------------------------------------------
+    Execução  599  de  600
+    Before dataset shape [(-1, 195), (0, 1317), (1, 2412)]
+    Resampled dataset shape [(-1, 2360), (0, 1317), (1, 2412)]
+    -------------------------------------------
 
 <div>
 <style scoped>
@@ -1933,329 +1527,6 @@ model_w2v_report
 </div>
 
 
-
-
-```python
-model_lsa_report
-```
-
-
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>accuracy</th>
-      <th>-1.precision</th>
-      <th>-1.recall</th>
-      <th>-1.f1-score</th>
-      <th>-1.support</th>
-      <th>0.precision</th>
-      <th>0.recall</th>
-      <th>0.f1-score</th>
-      <th>0.support</th>
-      <th>1.precision</th>
-      <th>...</th>
-      <th>1.f1-score</th>
-      <th>1.support</th>
-      <th>macro avg.precision</th>
-      <th>macro avg.recall</th>
-      <th>macro avg.f1-score</th>
-      <th>macro avg.support</th>
-      <th>weighted avg.precision</th>
-      <th>weighted avg.recall</th>
-      <th>weighted avg.f1-score</th>
-      <th>weighted avg.support</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>0.287487</td>
-      <td>0.071918</td>
-      <td>0.823529</td>
-      <td>0.132283</td>
-      <td>51</td>
-      <td>0.456522</td>
-      <td>0.064615</td>
-      <td>0.113208</td>
-      <td>325</td>
-      <td>0.637982</td>
-      <td>...</td>
-      <td>0.463362</td>
-      <td>591</td>
-      <td>0.388807</td>
-      <td>0.417312</td>
-      <td>0.236284</td>
-      <td>967</td>
-      <td>0.547140</td>
-      <td>0.287487</td>
-      <td>0.328217</td>
-      <td>967</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>0.310238</td>
-      <td>0.063752</td>
-      <td>0.744681</td>
-      <td>0.117450</td>
-      <td>47</td>
-      <td>0.382979</td>
-      <td>0.055901</td>
-      <td>0.097561</td>
-      <td>322</td>
-      <td>0.665768</td>
-      <td>...</td>
-      <td>0.509804</td>
-      <td>598</td>
-      <td>0.370833</td>
-      <td>0.404542</td>
-      <td>0.241605</td>
-      <td>967</td>
-      <td>0.542342</td>
-      <td>0.310238</td>
-      <td>0.353462</td>
-      <td>967</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>0.298862</td>
-      <td>0.057971</td>
-      <td>0.711111</td>
-      <td>0.107203</td>
-      <td>45</td>
-      <td>0.372549</td>
-      <td>0.059375</td>
-      <td>0.102426</td>
-      <td>320</td>
-      <td>0.653846</td>
-      <td>...</td>
-      <td>0.492754</td>
-      <td>602</td>
-      <td>0.361455</td>
-      <td>0.388612</td>
-      <td>0.234127</td>
-      <td>967</td>
-      <td>0.533030</td>
-      <td>0.298862</td>
-      <td>0.345644</td>
-      <td>967</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>0.317477</td>
-      <td>0.076208</td>
-      <td>0.706897</td>
-      <td>0.137584</td>
-      <td>58</td>
-      <td>0.457143</td>
-      <td>0.049080</td>
-      <td>0.088643</td>
-      <td>326</td>
-      <td>0.634518</td>
-      <td>...</td>
-      <td>0.511771</td>
-      <td>583</td>
-      <td>0.389290</td>
-      <td>0.394931</td>
-      <td>0.245999</td>
-      <td>967</td>
-      <td>0.541233</td>
-      <td>0.317477</td>
-      <td>0.346680</td>
-      <td>967</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>0.301965</td>
-      <td>0.056239</td>
-      <td>0.800000</td>
-      <td>0.105090</td>
-      <td>40</td>
-      <td>0.490196</td>
-      <td>0.086505</td>
-      <td>0.147059</td>
-      <td>289</td>
-      <td>0.677233</td>
-      <td>...</td>
-      <td>0.477157</td>
-      <td>638</td>
-      <td>0.407890</td>
-      <td>0.418281</td>
-      <td>0.243102</td>
-      <td>967</td>
-      <td>0.595648</td>
-      <td>0.301965</td>
-      <td>0.363113</td>
-      <td>967</td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-    </tr>
-    <tr>
-      <th>595</th>
-      <td>0.338159</td>
-      <td>0.084453</td>
-      <td>0.733333</td>
-      <td>0.151463</td>
-      <td>60</td>
-      <td>0.500000</td>
-      <td>0.067114</td>
-      <td>0.118343</td>
-      <td>298</td>
-      <td>0.647783</td>
-      <td>...</td>
-      <td>0.518227</td>
-      <td>609</td>
-      <td>0.410745</td>
-      <td>0.410768</td>
-      <td>0.262678</td>
-      <td>967</td>
-      <td>0.567288</td>
-      <td>0.338159</td>
-      <td>0.372238</td>
-      <td>967</td>
-    </tr>
-    <tr>
-      <th>596</th>
-      <td>0.288521</td>
-      <td>0.070447</td>
-      <td>0.854167</td>
-      <td>0.130159</td>
-      <td>48</td>
-      <td>0.403846</td>
-      <td>0.064220</td>
-      <td>0.110818</td>
-      <td>327</td>
-      <td>0.651652</td>
-      <td>...</td>
-      <td>0.469189</td>
-      <td>592</td>
-      <td>0.375315</td>
-      <td>0.428314</td>
-      <td>0.236722</td>
-      <td>967</td>
-      <td>0.539004</td>
-      <td>0.288521</td>
-      <td>0.331174</td>
-      <td>967</td>
-    </tr>
-    <tr>
-      <th>597</th>
-      <td>0.305067</td>
-      <td>0.064171</td>
-      <td>0.765957</td>
-      <td>0.118421</td>
-      <td>47</td>
-      <td>0.442308</td>
-      <td>0.070988</td>
-      <td>0.122340</td>
-      <td>324</td>
-      <td>0.666667</td>
-      <td>...</td>
-      <td>0.496842</td>
-      <td>596</td>
-      <td>0.391048</td>
-      <td>0.410973</td>
-      <td>0.245868</td>
-      <td>967</td>
-      <td>0.562210</td>
-      <td>0.305067</td>
-      <td>0.352970</td>
-      <td>967</td>
-    </tr>
-    <tr>
-      <th>598</th>
-      <td>0.289555</td>
-      <td>0.053381</td>
-      <td>0.789474</td>
-      <td>0.100000</td>
-      <td>38</td>
-      <td>0.300000</td>
-      <td>0.039474</td>
-      <td>0.069767</td>
-      <td>304</td>
-      <td>0.652055</td>
-      <td>...</td>
-      <td>0.480808</td>
-      <td>625</td>
-      <td>0.335145</td>
-      <td>0.403249</td>
-      <td>0.216859</td>
-      <td>967</td>
-      <td>0.517852</td>
-      <td>0.289555</td>
-      <td>0.336623</td>
-      <td>967</td>
-    </tr>
-    <tr>
-      <th>599</th>
-      <td>0.270941</td>
-      <td>0.074013</td>
-      <td>0.833333</td>
-      <td>0.135952</td>
-      <td>54</td>
-      <td>0.416667</td>
-      <td>0.029586</td>
-      <td>0.055249</td>
-      <td>338</td>
-      <td>0.617910</td>
-      <td>...</td>
-      <td>0.454945</td>
-      <td>575</td>
-      <td>0.369530</td>
-      <td>0.407640</td>
-      <td>0.215382</td>
-      <td>967</td>
-      <td>0.517196</td>
-      <td>0.270941</td>
-      <td>0.297424</td>
-      <td>967</td>
-    </tr>
-  </tbody>
-</table>
-<p>600 rows × 21 columns</p>
-</div>
-
-
-
-
 ```python
 print("Word2Vec Negative Recall ", model_w2v_report['-1.recall'].mean())
 
@@ -2315,6 +1586,9 @@ axes[1][1].set_title("Histograma de precision para positivos em word2vec")
 
 model_w2v_report['1.precision'].plot.hist(ax=axes[1][1], color="#218838")
 
+
+
+
 ```
 
 
@@ -2326,6 +1600,6 @@ model_w2v_report['1.precision'].plot.hist(ax=axes[1][1], color="#218838")
 
 
     
-![svg](youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_70_1.svg)
+![svg](youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_72_1.svg)
     
 
