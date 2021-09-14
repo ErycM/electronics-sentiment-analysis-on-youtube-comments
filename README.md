@@ -4,29 +4,15 @@
 
 Observando o volume de análises de celulares eletrônicos no youtube e sua popularidade de comentários, notei a possibilidade de efetuar uma categorização dos comentários desses vídeos a fim de conseguir uma indicação sobre quais os celulares são mais bem ou mal recebidos pelo público. Trazendo uma expectativa popular sobre os mesmos. 
 
-
-
 Temos assim como objetivo do modelo indicar quais são os comentários negativos e positivos das análises dos celulares, ou seja, seu valor de recall para comentários negativos e positivos.
 
-
-
 O maior desafio para este processo é a forma de categorizar a base principal dos dados para o treino do meu modelo. Os comentários dos vídeos do youtube possuem somente a opção “like” que não define se o mesmo é positivo ou negativo, somente se o comentário foi aceito pela maioria ou não. Algumas tentativas de utilização de APIs para definição desta base como o google natural language api foram utilizadas, porém com resultados bastante insatisfatórios. 
-
-
 
 # 2 Coleta dos dados
 
 ## 2.1 Levantamento dos produtos eletônicos
 
 Foi selecionado um total de 26 celulares para a análise com base nos lançamentos de 2020 e 2021 mais populares pelas suas faixas de preços. Coletei um total de 10 mil comentários para a base de dados. 
-
-
-```python
-phones_colleted
-```
-
-
-
 
 <div>
 <table border="1" class="dataframe">
@@ -187,11 +173,9 @@ Como evidenciado na exposição do problema não tínhamos uma forma existente d
 A interface contem os seguintes requisitos funcionais e técnicos:
 
 - Criada em Reactjs e os dados são armazenados por meio do Firebase;
-
 - A seleção dos comentários para os usuários foi de forma aleatória e com pesos. Onde os comentários menos avaliados pelos usuários tinham um peso maior para serem trazidos com maior probabilidade antes dos mais avaliados;
 
 - Cada usuário que fez a avaliação será diferenciado pelo IP ou um timestamp da página aberta no momento a fim de contabilizar o experimento;
-
 - Um total de 10 mil comentários foram armazenados na ferramenta.
 
 # 3.1 Preparação dos dados
@@ -462,189 +446,87 @@ Onde "final_type" corresponde a classificação do comentário positivo (1), neu
 Meu objetivo aqui é padronizar meus comentários a fim de aplicar as tecnicas de criação de feature (LSA e Word2Vec). Defini funções para cada uma das etapadas da transformação, as mesmas são:
 
 - Transformar todos os comentários para letras minúculas;
-
 - Remover pontuações;
-
 - Transformar emojis para códigos. Exemplo: 
-
 - Normalização do texto em UTF-8
-
 - Remoção de stop words (excessão a palavra "não")
-
 - Estematização das palavras. Exemplo: 
-
 - Remoção de excesso de espaços (\n)
-
 
 ```python
 def remove_punctuation(dfText, exception = {}):
-
     import re
-
     import string
-
     regex = re.compile('[%s]' % re.escape(string.punctuation)) #see documentation here: http://docs.python.org/2/library/string.html
-
-
-
     tokenized_docs_no_punctuation = []
-
-
-
     for review in dfText:
-
         # new_review = []
-
         new_review = ""
-
         for token in review:
-
             new_token = regex.sub(u'', token)
-
             if not new_token == u'':
-
-                
-
-                #new_review.append(new_token)
-
                 new_review = new_review + new_token
-
             else:
-
                 for sentence in exception:
-
                     # print(token,':',sentence)
-
                     if token == sentence:
-
                         new_review = new_review +" "+exception[sentence]+" "
-
                     else:
-
-                        new_review = new_review + " "
-
-        
-
+                        new_review = new_review + " 
         tokenized_docs_no_punctuation.append(new_review)
-
     return tokenized_docs_no_punctuation
 
 
 
 def unicode_emoji(dfText, remove=False):
-
     import emoji
-
     for emoj in emoji.UNICODE_EMOJI['pt']:
-
         if remove:
-
             dfText = dfText.str.replace(emoj,' ', regex=False)
-
         else:
-
             dfText = dfText.str.replace(emoj, ' '+emoji.UNICODE_EMOJI['pt'][emoj]+' ', regex=False)
-
     return dfText
 
-
-
 def normalize_utf8(dfText):
-
     return dfText.str.normalize("NFKD").str.encode("ascii", errors="ignore").str.decode("utf8")
 
-
-
 def removing_stop_words(dfText):
-
     import nltk
-
     nltk.download('stopwords')
-
     stopwords = nltk.corpus.stopwords.words('portuguese') # removing stop words
-
-    
-
     stopwords.append('q')
-
     stopwords.append('pra')
-
     stopwords.append('td')
-
     # stopwords.remove('não')
-
-
-
     stopwords = pd.DataFrame(stopwords, columns=['normalized'])
-
     stopwords['normalized'] = stopwords['normalized'].str.normalize("NFKD").str.encode("ascii", errors="ignore").str.decode("utf8")
-
-
-
     stopword_data = []
-
     for idx,review in enumerate(dfText):
-
         new_phrase = ""
-
         for word in review.split(" "):
-
-            # print(word)
-
             if  not stopwords['normalized'].str.match('^'+word+'$').any():
-
                 new_phrase = new_phrase + " " + word
-
-
-
         stopword_data.append(new_phrase)
-
-
-
     return stopword_data
 
 
 
 def portuguese_stemmer(dfText):
-
     # #!pip install git+git://github.com/snowballstem/pystemmer
-
     import Stemmer
-
     stemmer = Stemmer.Stemmer('portuguese')
-
-
-
     stemmer_docs = []
-
     for phrase in dfText:
-
         stemmer_docs.append(' '.join(stemmer.stemWords(phrase.split(" "))))
-
-
-
     return stemmer_docs
 
-
-
 def excess_space_remover(dfText):
-
     all_commnets_list = dfText.to_list()
-
-
-
     for i in range(len(all_commnets_list)):
-
         all_commnets_list[i] = re.sub(r"\s+", " ", all_commnets_list[i])
-
-
-
     return all_commnets_list
 
-
-
 def lower_case(dfText):
-
     return dfText.str.lower()
 ```
 
@@ -675,29 +557,17 @@ exclamation = df['final_type'].loc[df['comment'].str.find('!') != -1].value_coun
 exclamation = pd.DataFrame([round(exclamation[-1],2),round(exclamation[1],2),round(exclamation[0],2)], index=['Negativo', 'Positivo', 'Neutro'])
 
 interrogation = df['final_type'].loc[df['comment'].str.find('?') != -1].value_counts()/df['final_type'].value_counts()*100
-interrogation = pd.DataFrame([round(interrogation[-1],2),round(interrogation[1],2),round(interrogation[0],2)], index=['Negativo', 'Positivo', 'Neutro'])
+interrogation = pd.DataFrame([round(interrogation[0],2),round(interrogation[1],2),round(interrogation[-1],2)], index=['Neutro', 'Positivo', 'Negativo'])
 
 exclamation[0].plot.bar(
-
-    # color=['#dc3545','#ffc107','#218838'],
-
     color=['#dc3545','#218838','#ffc107'],
-
     ax=ax[0],
-
     rot=1)
 
 interrogation[0].plot.bar(
-
-    # color=['#dc3545','#ffc107','#218838'],
-
-    color=['#dc3545','#218838','#ffc107'],
-
+    color=['#ffc107','#218838','#dc3545'],
     ax=ax[1],
-
     rot=1)
-
-
 
 ax[0].get_yaxis().set_ticks([])
 ax[0].grid(False)
@@ -757,23 +627,7 @@ types_emojis = pd.DataFrame(types_emojis)
 
 ```
 
-
-
-
 <div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -848,12 +702,8 @@ types_emojis = pd.DataFrame(types_emojis)
 </table>
 </div>
 
-
-
-
 ```python
 emojis_line_count = []
-
 for comment in df['comment']:
 
     hasEmoji = False
@@ -872,11 +722,8 @@ emojis_percent = df['final_type'].loc[df['has_emoji']].value_counts()/df['final_
 emojis_percent = pd.DataFrame([round(emojis_percent[1],2),round(emojis_percent[-1],2),round(emojis_percent[0],2)], index=['Positivo', 'Negativo', 'Neutro'])
 
 emojis_percent[0].plot.barh(
-
     color=['#218838','#dc3545','#ffc107'],
-
     ax=ax,
-
     rot=1)
 
 ax.set_title("Percentual de comentários com emojis (%)", fontsize=16, color='#4f4e4e')
@@ -921,9 +768,6 @@ sns.despine(left=True)
     
 ```python
 wc = WordCloud(background_color='black', width = 3000, height = 2000, colormap='Set2', collocations=False)
-
-#df['transformed_comment']
-
 wc.generate(' '.join(df['transformed_comment']))
 
 plt.axis("off")
@@ -941,45 +785,18 @@ Através da análise exploratória, entende-se que a utilização de um método 
 
 ```python
 def overSamplDef(X_res, y_res, overMethod, sampling_strategy='auto'):
-
     from collections import Counter
-
     from imblearn.over_sampling import RandomOverSampler
-
     from imblearn.over_sampling import SMOTE 
-
-    # from imblearn.over_sampling import SMOTENC
-
     from imblearn.over_sampling import SMOTEN
-
     from imblearn.over_sampling import ADASYN 
-
     from imblearn.over_sampling import BorderlineSMOTE
-
     from imblearn.over_sampling import KMeansSMOTE
-
     from imblearn.over_sampling import SVMSMOTE 
 
-    
-
-    # print(sampling_strategy)
-
-
-
     print('Before dataset shape %s' % sorted(Counter(y_res).items()))
-
     ros = overMethod(sampling_strategy=sampling_strategy)
-
-    # ros = BorderlineSMOTE()
-
-    # sampling_strategy='minority'
-
-    # ros = SMOTE()
-
     X_res, y_res = ros.fit_resample(X_res, y_res)
-
-
-
     print('Resampled dataset shape %s' % sorted(Counter(y_res).items()))
 
     print("-------------------------------------------")
@@ -1016,8 +833,6 @@ for i in range(len(all_commnets_list)):
     for y, _ in enumerate(tokenized):
         tokenized_words.append([word for word in tokenized[y]])
 
-
-
 all_commnets_list = tokenized_words
 
 model = Word2Vec(all_commnets_list, min_count=1)
@@ -1027,7 +842,6 @@ model = Word2Vec(all_commnets_list, min_count=1)
 model.wv.save('src/eletronics_model.bin')
 embeddings = KeyedVectors.load('src/eletronics_model.bin')
 ```
-
 
 ```python
 word2vec_doc_vec = pd.DataFrame()
@@ -1052,7 +866,6 @@ X_w2v.shape
 (4906, 100)
 
 
-
 ### 5.2.2 LSA
 
 
@@ -1075,7 +888,6 @@ X_lsa.shape
 (4906, 100)
 
 
-
 Em ambos os métodos 100 features foram criadas para a classificação dos comentários.
 
 # 5.3 Treinando o Modelo
@@ -1086,7 +898,6 @@ Para o treinamento do modelo a partir das features criadas o métodos LinearSVC 
 param_grid = [
   {'C': [1, 10, 100, 1000]}
  ] 
-
 svc = SVC()
 
 X_train_w2v, X_test_w2v, y_train_w2v, y_test_w2v = train_test_split(X_w2v, df['final_type'], test_size = .20)
@@ -1096,18 +907,16 @@ y_pred_w2v = model_w2v.predict(X_test_w2v)
 y_pred_train_w2v = model_w2v.predict(X_train_w2v)
 
 param_grid = [
-
   {'C': [1, 10, 100, 1000]}
-
  ] 
 
 svc = SVC()
-
 X_train_lsa, X_test_lsa, y_train_lsa, y_test_lsa = train_test_split(X_lsa, df['final_type'], test_size = .20)
 X_train_lsa, y_train_lsa = overSamplDef(X_train_lsa, y_train_lsa, ADASYN, sampling_strategy='minority') 
 model_lsa = GridSearchCV(svc, param_grid).fit(X_train_lsa, y_train_lsa)
 y_pred_lsa = model_lsa.predict(X_test_lsa)
 y_pred_train_lsa = model_lsa.predict(X_train_lsa)
+
 ```
     Before dataset shape [(-1, 188), (0, 1294), (1, 2442)]
     Resampled dataset shape [(-1, 2436), (0, 1294), (1, 2442)]
@@ -1169,15 +978,12 @@ model_report = pd.DataFrame()
 predict_w2v_traning = []
 predict_lsa_traning = []
 
-
-
 for exec in range(600):
     print("Execução ", exec, " de ", 600)
     param_grid = [
         {'C': [1, 10, 100, 1000]}
     ] 
     svc = LinearSVC()
-
 
     X_train_w2v, X_test_w2v, y_train_w2v, y_test_w2v = train_test_split(X_w2v, df['final_type'], test_size = .2)
     X_train_w2v, y_train_w2v = overSamplDef(X_train_w2v, y_train_w2v, ADASYN, sampling_strategy='minority') 
@@ -1216,19 +1022,6 @@ model_lsa_report.to_csv('src/lsa_report2.csv', index=False)
     -------------------------------------------
 
 <div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -1526,27 +1319,17 @@ model_lsa_report.to_csv('src/lsa_report2.csv', index=False)
 <p>600 rows × 21 columns</p>
 </div>
 
-
 ```python
 print("Word2Vec Negative Recall ", model_w2v_report['-1.recall'].mean())
-
 print("Word2Vec Positive Recall ", model_w2v_report['1.recall'].mean())
-
 print("Word2Vec Negative Precision ", model_w2v_report['-1.precision'].mean())
-
 print("Word2Vec Positive Precision ", model_w2v_report['1.precision'].mean())
-
 print("------------------------------------------------")
-
 print("LSA Negative Recall ", model_lsa_report['-1.recall'].mean())
-
-print("LSA Positive Recall ", model_lsa_report['1.recall'].mean())
-
+print("LSA Positive Recall ", model_lsa_report['1.recall'].mean()
 print("LSA Negative Precision ", model_lsa_report['-1.precision'].mean())
-
 print("LSA Positive Precision ", model_lsa_report['1.precision'].mean())
 ```
-
     Word2Vec Negative Recall  0.6760651665443369
     Word2Vec Positive Recall  0.5902087091180059
     Word2Vec Negative Precision  0.07972179854547427
@@ -1557,7 +1340,6 @@ print("LSA Positive Precision ", model_lsa_report['1.precision'].mean())
     LSA Negative Precision  0.06515107584511744
     LSA Positive Precision  0.6489308944833397
     
-
 Para ambas as features, obtemos resultados parecidos aos executados anteriormente. Com atenção os nossos atributos principais da feature word2vec de 67% para negativos e 59% para positivos. 
 
 
@@ -1565,40 +1347,17 @@ Para ambas as features, obtemos resultados parecidos aos executados anteriorment
 fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(30,15))
 
 axes[0][0].set_title("Histograma de recall para negativos em word2vec")
-
 model_w2v_report['-1.recall'].plot.hist(ax=axes[0][0], color="#dc3545")
 
-
-
 axes[0][1].set_title("Histograma de recall para positivos em word2vec")
-
 model_w2v_report['1.recall'].plot.hist(ax=axes[0][1], color="#218838")
 
-
-
 axes[1][0].set_title("Histograma de precision para negativos em word2vec")
-
 model_w2v_report['-1.precision'].plot.hist(ax=axes[1][0], color="#dc3545")
 
-
-
 axes[1][1].set_title("Histograma de precision para positivos em word2vec")
-
 model_w2v_report['1.precision'].plot.hist(ax=axes[1][1], color="#218838")
-
-
-
-
 ```
-
-
-
-
-    <AxesSubplot:title={'center':'Histograma de precision para positivos em word2vec'}, ylabel='Frequency'>
-
-
-
-
     
 ![svg](youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_72_1.svg)
     
