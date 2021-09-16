@@ -168,7 +168,7 @@ Considerei que a melhor maneira de encontrar os reviews dos produtos é por meio
 
 Como evidenciado na exposição do problema não tínhamos uma forma existente de coleta desses comentários já classificados no youtube. Para isso criou-se então um site de classificação dos comentários aberto ao público. O mesmo pode ser visualizado através do [link](https://comments-reviews-web-app.vercel.app/). A mesma tem a seguinte interface:
   
-![png](youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_15_0.png)
+![png](src/youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_15_0.png)
     
 A interface contem os seguintes requisitos funcionais e técnicos:
 
@@ -585,7 +585,7 @@ ax[1].set_title("Percentual de Interrogação (?) por comentário (%)", fontsize
 ax[1].bar_label(ax[1].containers[0], padding=2, fontsize=12, color='#4f4e4e')
 ```
  
-![svg](youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_31_1.svg)
+![svg](src/youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_31_1.svg)
   
 Nota-se que a quantidade de comentários com exclamação é maior para os negativo e consideravelmente menos para neutros, além disso o percentual de interrogação para neutros é bastanta alto também e muito baixo para negativos. Os dois serão considerados nas features do modelo. 
 
@@ -730,7 +730,7 @@ ax.set_title("Percentual de comentários com emojis (%)", fontsize=16, color='#4
 ax.bar_label(ax.containers[0], padding=2, fontsize=12, color='#4f4e4e')
 ```
     
-![svg](youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_36_1.svg)
+![svg](src/youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_36_1.svg)
     
 Apesar da pequena a quantidade de emojis por comentários, os emojis entre as classificações são de maioria distintos e podem ser relevantes como features.
 
@@ -764,7 +764,7 @@ plt.text(x=2, y=0.01, s="4.93",
 sns.despine(left=True)
 ```
 
-![svg](youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_40_0.svg)
+![svg](src/youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_40_0.svg)
     
 ```python
 wc = WordCloud(background_color='black', width = 3000, height = 2000, colormap='Set2', collocations=False)
@@ -775,7 +775,7 @@ plt.imshow(wc, interpolation="bilinear")
 plt.show()
 ```
     
-![svg](youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_41_0.svg)
+![svg](src/youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_41_0.svg)
     
 # 5. Modelagem
 
@@ -806,7 +806,7 @@ def overSamplDef(X_res, y_res, overMethod, sampling_strategy='auto'):
 
 ## 5.2 Criando Freatures
 
-Por meio de alguns testes e análises efetuadas em [6.youtube-comments-types-analysis.ipynb](https://github.com/ErycM/electronics-sentiment-analysis-on-youtube-comments/blob/main/6.youtube-comments-types-analysis.ipynb) concluiu-se que os melhores métodos de criação de freatures a serem utilizados são o LSA e Word2Vec pois os mesmos trazem os melhores resultados quando somados ao oversample. 
+Por meio de alguns testes e análises efetuadas em [6.youtube-comments-types-analysis.ipynb](https://github.com/ErycM/electronics-sentiment-analysis-on-youtube-comments/blob/main/src/6.youtube-comments-types-analysis.ipynb) concluiu-se que os melhores métodos de criação de freatures a serem utilizados são o LSA e Word2Vec pois os mesmos trazem os melhores resultados quando somados ao oversample. 
 
 ```python
 required_columns = 'transformed_comment'
@@ -892,7 +892,7 @@ Em ambos os métodos 100 features foram criadas para a classificação dos comen
 
 # 5.3 Treinando o Modelo
 
-Para o treinamento do modelo a partir das features criadas o métodos LinearSVC trouxe o melhor resultado de recall comparado aos demais métodos utilizados em [6.youtube-comments-types-analysis.ipynb](https://github.com/ErycM/electronics-sentiment-analysis-on-youtube-comments/blob/main/6.youtube-comments-types-analysis.ipynb). Para a execução do oversample o método Adaptive Synthetic (ADASYN) me trouxe o melhor resultado pois o mesmo controla com melhor eficácia a replicação dos dados em regiões com maior densidade da minha amostra minoritária, evitando replicações desnecessárias em outliers. A estratégia utilizada para a criação de novos dados com o ADASYN foi a partir do "minority" que equilibra somente os dados de menor quantidade com os de maior quantidade, evitando qualquer alteração nos dados de categoria neutra que não são interessantes para a análise. 
+Para o treinamento do modelo a partir das features criadas o métodos LinearSVC trouxe o melhor resultado de recall comparado aos demais métodos utilizados em [6.youtube-comments-types-analysis.ipynb](https://github.com/ErycM/electronics-sentiment-analysis-on-youtube-comments/blob/main/src/6.youtube-comments-types-analysis.ipynb). Para a execução do oversample o método Adaptive Synthetic (ADASYN) me trouxe o melhor resultado pois o mesmo controla com melhor eficácia a replicação dos dados em regiões com maior densidade da minha amostra minoritária, evitando replicações desnecessárias em outliers. A estratégia utilizada para a criação de novos dados com o ADASYN foi a partir do "minority" que equilibra somente os dados de menor quantidade com os de maior quantidade, evitando qualquer alteração nos dados de categoria neutra que não são interessantes para a análise. 
 
 ```python
 param_grid = [
@@ -964,8 +964,8 @@ disp = plot_confusion_matrix(y_test_lsa, y_pred_lsa)
 disp.set_title('LSVC - LSA')
 ```
     
-![svg](youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_62_1.svg)    
-![svg](youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_62_2.svg)
+![svg](src/youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_62_1.svg)    
+![svg](src/youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_62_2.svg)
     
 Após a execução do oversample e depois de treinar o modelo com LinearSVC obtivemos os valores de aproximadamente 65% de recall para negativos e 60% de recall para positivos em word2vec. Para o método LSA, obtivemos um valor mais elevado de recall em negativos (80%) e menor em positivos (35%), porém a fim de equilibrar nossos resultados em ambos os atributos, o word2vec é o mais efiente. 
 
@@ -1359,6 +1359,6 @@ axes[1][1].set_title("Histograma de precision para positivos em word2vec")
 model_w2v_report['1.precision'].plot.hist(ax=axes[1][1], color="#218838")
 ```
     
-![svg](youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_72_1.svg)
+![svg](src/youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_72_1.svg)
     
 
