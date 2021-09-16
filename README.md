@@ -189,8 +189,6 @@ Após a criação do site para a coleta de avaliações, monitorei os dados cole
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
-      <th></th>
-      <th>Unnamed: 0</th>
       <th>data</th>
       <th>comentarios avaliados</th>
       <th>comentarios avaliados %</th>
@@ -205,8 +203,6 @@ Após a criação do site para a coleta de avaliações, monitorei os dados cole
   </thead>
   <tbody>
     <tr>
-      <th>0</th>
-      <td>0</td>
       <td>06/09/2021 10:36:01</td>
       <td>4908</td>
       <td>49.08</td>
