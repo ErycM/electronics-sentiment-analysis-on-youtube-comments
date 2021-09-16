@@ -224,7 +224,7 @@ Após a criação do site para a coleta de avaliações, monitorei os dados cole
 
 
 
-Com os comentários avaliados, efetuei então a coleta dos dados. Os detalhes do mesmo utilizando a API do firebase podem ser encontrados em "5.youtube-review-comment-collect.ipynb". O mesmo não será exposto aqui a fim de condensar o processo.
+Com os comentários avaliados, efetuei então a coleta dos dados. Os detalhes do mesmo utilizando a API do firebase podem ser encontrados em [5.youtube-review-comment-collect.ipynb](https://github.com/ErycM/electronics-sentiment-analysis-on-youtube-comments/blob/main/src/5.youtube-review-comment-collect.ipynb). O mesmo não será exposto aqui a fim de condensar o processo.
 
 Após a coleta dos dados do Firebase e sua manipulação, os seguintes dados foram coletados:
 
