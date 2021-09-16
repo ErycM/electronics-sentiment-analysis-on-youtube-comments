@@ -169,7 +169,7 @@ Considerei que a melhor maneira de encontrar os reviews dos produtos é por meio
 
 ## 2.3 Coleta das informações
 
-Como evidenciado na exposição do problema não tínhamos uma forma existente de coleta desses comentários já classificados no youtube. Para isso criou-se então um site de classificação dos comentários aberto ao público. O mesmo pode ser visualizado através do [link](https://comments-reviews-web-app.vercel.app/). A mesma tem a seguinte interface:
+Como evidenciado na exposição do problema não tínhamos uma forma existente de coleta desses comentários já classificados no youtube. Para isso criou-se então um site de classificação dos comentários aberto ao público. O site pode ser visualizado através do [link](https://comments-reviews-web-app.vercel.app/) e seu repositório [neste](https://github.com/ErycM/comments-reviews-web-app). O sistema tem a seguinte interface:
   
 ![png](src/src/youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_15_0.png)
     
