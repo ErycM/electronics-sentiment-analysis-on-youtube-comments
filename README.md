@@ -1,29 +1,28 @@
-# Análise de sentimento - Comentários de Análises de Celulares no Youtube
+# Sentiment Analysis - Comments on Cell Phone Reviews on YouTube
 
-# 1 Exposição do problema
+# 1 Problem Statement
 
-Observando o volume de análises de celulares eletrônicos no youtube e sua popularidade de comentários, notei a possibilidade de efetuar uma categorização dos comentários desses vídeos a fim de conseguir uma indicação sobre quais os celulares são mais bem ou mal recebidos pelo público. Trazendo uma expectativa popular sobre os mesmos. 
+Noticing the volume of electronic cell phone reviews on YouTube and the popularity of their comments, I saw the potential to categorize these video comments in order to gauge public reception of the cell phones. This approach aims to capture the popular sentiment about these devices.
 
-Temos assim como objetivo do modelo indicar quais são os comentários negativos e positivos das análises dos celulares, ou seja, seu valor de recall para comentários negativos e positivos.
+Thus, the goal of the model is to identify which comments are negative and positive in the cell phone reviews, that is, its recall value for negative and positive comments.
 
-O maior desafio para este processo é a forma de categorizar a base principal dos dados para o treino do meu modelo. Os comentários dos vídeos do youtube possuem somente a opção “like” que não define se o mesmo é positivo ou negativo, somente se o comentário foi aceito pela maioria ou não. Algumas tentativas de utilização de APIs para definição desta base como o google natural language api foram utilizadas, porém com resultados bastante insatisfatórios. 
+The main challenge in this process is how to categorize the primary data set for training my model. Comments on YouTube videos only have a “like” option, which does not indicate whether the comment is positive or negative, only if it was accepted by the majority or not. Some attempts to use APIs to define this base, such as Google Natural Language API, have been made, but with very unsatisfactory results.
 
-O notebook com a análise completa pode ser encontrado em [youtube-comments-types-analysis-complete-review.ipynb](https://github.com/ErycM/electronics-sentiment-analysis-on-youtube-comments/blob/main/youtube-comments-types-analysis-complete-review.ipynb).
+The notebook with the complete analysis can be found at [youtube-comments-types-analysis-complete-review.ipynb](https://github.com/ErycM/electronics-sentiment-analysis-on-youtube-comments/blob/main/youtube-comments-types-analysis-complete-review.ipynb).
 
+# 2 Data Collection
 
-# 2 Coleta dos dados
+## 2.1 Survey of Electronic Products
 
-## 2.1 Levantamento dos produtos eletônicos
-
-Foi selecionado um total de 26 celulares para a análise com base nos lançamentos de 2020 e 2021 mais populares pelas suas faixas de preços. Coletei um total de 10 mil comentários para a base de dados. 
+A total of 26 cell phones were selected for analysis based on the most popular releases from 2020 and 2021, considering their price ranges. I collected a total of 10,000 comments for the database.
 
 <div>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>Celular</th>
-      <th>Faixa de preço até</th>
+      <th>Cell Phone</th>
+      <th>Price Range up to</th>
     </tr>
   </thead>
   <tbody>
@@ -161,49 +160,47 @@ Foi selecionado um total de 26 celulares para a análise com base nos lançament
 </table>
 </div>
 
+## 2.2 Survey and Filter of Videos
 
+I considered that the best way to find product reviews is by searching with the title “'brand + model' analysis” in Portuguese for videos uploaded up to 12 months ago and with at least 50,000 views. It is expected that at least 5 videos of each device will be analyzed.
 
-## 2.2 Levantamento da pesquisa e filtro dos vídeos
+## 2.3 Information Collection
 
-Considerei que a melhor maneira de encontrar os reviews dos produtos é por meio da pesquisa com o título “ ‘marca + modelo’ análise" em português para vídeos enviados até 12 meses atrás e com no mínimo 50 mil visualizações. Espera-se que ao menos 5 vídeos de cada aparelho sejam analisados.
+As highlighted in the problem statement, we did not have an existing way to collect these already classified comments on YouTube. Therefore, a public comment classification site was created. The site can be viewed through this [link](https://comments-reviews-web-app.vercel.app/) and its repository [here](https://github.com/ErycM/comments-reviews-web-app). The system has the following interface:
 
-## 2.3 Coleta das informações
-
-Como evidenciado na exposição do problema não tínhamos uma forma existente de coleta desses comentários já classificados no youtube. Para isso criou-se então um site de classificação dos comentários aberto ao público. O site pode ser visualizado através do [link](https://comments-reviews-web-app.vercel.app/) e seu repositório [neste](https://github.com/ErycM/comments-reviews-web-app). O sistema tem a seguinte interface:
-  
 ![png](src/src/youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_15_0.png)
-    
-A interface contem os seguintes requisitos funcionais e técnicos:
 
-- Criada em Reactjs e os dados são armazenados por meio do Firebase;
-- A seleção dos comentários para os usuários foi de forma aleatória e com pesos. Onde os comentários menos avaliados pelos usuários tinham um peso maior para serem trazidos com maior probabilidade antes dos mais avaliados;
+The interface contains the following functional and technical requirements:
 
-- Cada usuário que fez a avaliação será diferenciado pelo IP ou um timestamp da página aberta no momento a fim de contabilizar o experimento;
-- Um total de 10 mil comentários foram armazenados na ferramenta.
+- Created in Reactjs and the data is stored via Firebase;
+- The selection of comments for users was random and weighted. Where the less evaluated comments by users had a higher weight to be brought with higher probability before the more evaluated ones;
 
-# 3.1 Preparação dos dados
+- Each user who made the assessment will be differentiated by the IP or a timestamp of the page opened at the moment in order to account for the experiment;
+- A total of 10,000 comments were stored in the tool.
 
-Após a criação do site para a coleta de avaliações, monitorei os dados coletados e avaliados pelos usuários. Meu número final de comentários avaliados foi o evidenciado abaixo: 
+# 3.1 Data Preparation
+
+After creating the site for collecting reviews, I monitored the data collected and evaluated by users. My final number of evaluated comments is shown below:
 
 <div>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
-      <th>data</th>
-      <th>comentarios avaliados</th>
-      <th>comentarios avaliados %</th>
-      <th>comentários com 2</th>
-      <th>comentários com 3</th>
-      <th>comentários com 1</th>
-      <th>comentários com 4</th>
-      <th>comentários com 5</th>
-      <th>comentários com 6</th>
-      <th>comentarios avaliados totais</th>
+      <th>date</th>
+      <th>evaluated comments</th>
+      <th>evaluated comments %</th>
+      <th>comments with 2</th>
+      <th>comments with 3</th>
+      <th>comments with 1</th>
+      <th>comments with 4</th>
+      <th>comments with 5</th>
+      <th>comments with 6</th>
+      <th>total evaluated comments</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td>06/09/2021 10:36:01</td>
+      <td>09/06/2021 10:36:01</td>
       <td>4908</td>
       <td>49.08</td>
       <td>1142</td>
@@ -218,11 +215,9 @@ Após a criação do site para a coleta de avaliações, monitorei os dados cole
 </table>
 </div>
 
+With the evaluated comments, I then proceeded to data collection. The details of this using the Firebase API can be found at [5.youtube-review-comment-collect.ipynb](https://github.com/ErycM/electronics-sentiment-analysis-on-youtube-comments/blob/main/src/5.youtube-review-comment-collect.ipynb). It will not be displayed here in order to condense the process.
 
-
-Com os comentários avaliados, efetuei então a coleta dos dados. Os detalhes do mesmo utilizando a API do firebase podem ser encontrados em [5.youtube-review-comment-collect.ipynb](https://github.com/ErycM/electronics-sentiment-analysis-on-youtube-comments/blob/main/src/5.youtube-review-comment-collect.ipynb). O mesmo não será exposto aqui a fim de condensar o processo.
-
-Após a coleta dos dados do Firebase e sua manipulação, os seguintes dados foram coletados:
+After collecting the data from Firebase and manipulating it, the following data were collected:
 
 <div>
 <table border="1" class="dataframe">
@@ -438,31 +433,31 @@ Após a coleta dos dados do Firebase e sua manipulação, os seguintes dados for
 <p>4906 rows × 14 columns</p>
 </div>
 
-Onde "final_type" corresponde a classificação do comentário positivo (1), neutro(0) ou negativo(-1)
+Where "final_type" corresponds to the classification of the comment as positive (1), neutral (0), or negative (-1)
 
-# 3.2 Transformação com técnicas de NLP
+# 3.2 Transformation with NLP Techniques
 
-Meu objetivo aqui é padronizar meus comentários a fim de aplicar as tecnicas de criação de feature (LSA e Word2Vec). Defini funções para cada uma das etapadas da transformação, as mesmas são:
+My goal here is to standardize my comments to apply feature creation techniques (LSA and Word2Vec). I defined functions for each of the transformation stages, which are:
 
-- Transformar todos os comentários para letras minúculas;
-- Remover pontuações;
-- Transformar emojis para códigos. Exemplo: 
-- Normalização do texto em UTF-8
-- Remoção de stop words (excessão a palavra "não")
-- Estematização das palavras. Exemplo: 
-- Remoção de excesso de espaços (\n)
+- Convert all comments to lowercase;
+- Remove punctuation;
+- Transform emojis into codes. Example:
+- Text normalization in UTF-8;
+- Removal of stop words (except the word "não" [no]);
+- Stemming of words. Example:
+- Removal of excessive spaces (\n).
 
-# 4 Análise Exploratória
+# 4 Exploratory Analysis
 
-Após o tratamento das informações algumas análises foram feitas a fim de entender os dados. 
+After processing the information, some analyses were made to understand the data.
 
-## 4.1 Exclamação e Interrogação são importantes para a análise
- 
+## 4.1 Exclamation and Question Marks are Important for Analysis
+
 ![svg](src/src/youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_31_1.svg)
-  
-Nota-se que a quantidade de comentários com exclamação é maior para os negativo e consideravelmente menos para neutros, além disso o percentual de interrogação para neutros é bastanta alto também e muito baixo para negativos. Os dois serão considerados nas features do modelo. 
 
-## 4.2 Emotes podem ser relevantes para a análise
+It is noted that the number of comments with exclamation marks is higher for negative comments and considerably lower for neutral ones, also the percentage of question marks for neutral comments is quite high as well and very low for negative comments. Both will be considered in the model's features.
+
+## 4.2 Emojis May Be Relevant for Analysis
 ![svg](src/src/youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_36_1.svg)
 
 <div style="text-align:center">
@@ -470,9 +465,9 @@ Nota-se que a quantidade de comentários com exclamação é maior para os negat
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>Negativo</th>
-      <th>Neutro</th>
-      <th>Positivo</th>
+      <th>Negative</th>
+      <th>Neutral</th>
+      <th>Positive</th>
     </tr>
   </thead>
   <tbody>
@@ -539,30 +534,28 @@ Nota-se que a quantidade de comentários com exclamação é maior para os negat
   </tbody>
 </table>
 </div>
-    
 
-    
-Apesar da pequena a quantidade de emojis por comentários, os emojis entre as classificações são de maioria distintos e podem ser relevantes como features.
+Although the number of emojis per comment is small, the emojis among the classifications are mostly distinct and can be relevant as features.
 
-## 4.3 Quantidade muito baixa de comentários negativos
+## 4.3 Very Low Number of Negative Comments
 
-Nota-se uma quantidade muito baixa de comentários negativos em meu escopo de dados, além de uma quantidade muito grande de comentários positivos. Técnicas de balanceamento de classes serão utilizadas nesse modelo.
+There is a very low number of negative comments in my data scope, as well as a very large number of positive comments. Class balancing techniques will be used in this model.
 
 ![svg](src/src/youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_40_0.svg)
-       
+
 ![svg](src/src/youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_41_0.svg)
-    
-# 5. Modelagem
 
-Através da análise exploratória, entende-se que a utilização de um método de balancemento dos dados será necessário. Para isso criei uma função genérica que aplica o método oversample aos dados que serão utilizados posteriormente.
+# 5. Modeling
 
-## 5.1 Criando Freatures
+Through exploratory analysis, it is understood that the use of a data balancing method will be necessary. For this, I created a generic function that applies the oversample method to the data that will be used later.
 
-Por meio de alguns testes e análises efetuadas em [6.youtube-comments-types-analysis.ipynb](https://github.com/ErycM/electronics-sentiment-analysis-on-youtube-comments/blob/main/src/6.youtube-comments-types-analysis.ipynb) concluiu-se que os melhores métodos de criação de freatures a serem utilizados são o LSA e Word2Vec pois os mesmos trazem os melhores resultados quando somados ao oversample. Em ambos os métodos 100 features foram criadas para a classificação dos comentários.
+## 5.1 Creating Features
 
-# 5.3 Treinando o Modelo
+Through some tests and analyses conducted in [6.youtube-comments-types-analysis.ipynb](https://github.com/ErycM/electronics-sentiment-analysis-on-youtube-comments/blob/main/src/6.youtube-comments-types-analysis.ipynb), it was concluded that the best feature creation methods to be used are LSA and Word2Vec, as they bring the best results when combined with oversampling. In both methods, 100 features were created for the classification of comments.
 
-Para o treinamento do modelo a partir das features criadas o métodos LinearSVC trouxe o melhor resultado de recall comparado aos demais métodos utilizados em [6.youtube-comments-types-analysis.ipynb](https://github.com/ErycM/electronics-sentiment-analysis-on-youtube-comments/blob/main/src/6.youtube-comments-types-analysis.ipynb). Para a execução do oversample o método Adaptive Synthetic (ADASYN) me trouxe o melhor resultado pois o mesmo controla com melhor eficácia a replicação dos dados em regiões com maior densidade da minha amostra minoritária, evitando replicações desnecessárias em outliers. A estratégia utilizada para a criação de novos dados com o ADASYN foi a partir do "minority" que equilibra somente os dados de menor quantidade com os de maior quantidade, evitando qualquer alteração nos dados de categoria neutra que não são interessantes para a análise. 
+# 5.3 Training the Model
+
+For training the model from the created features, the LinearSVC method brought the best recall results compared to other methods used in [6.youtube-comments-types-analysis.ipynb](https://github.com/ErycM/electronics-sentiment-analysis-on-youtube-comments/blob/main/src/6.youtube-comments-types-analysis.ipynb). For executing oversampling, the Adaptive Synthetic (ADASYN) method gave me the best result as it more effectively controls the replication of data in areas with higher density of my minority sample, avoiding unnecessary replications in outliers. The strategy used for creating new data with ADASYN was based on "minority", which balances only the data in smaller quantities with those in larger quantities, avoiding any alteration in the neutral category data that are not relevant for the analysis.
 
     SVC - Report W2V
                   precision    recall  f1-score   support
@@ -589,11 +582,11 @@ Para o treinamento do modelo a partir das features criadas o métodos LinearSVC 
 ![svg](src/src/youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_62_1.svg)    
 ![svg](src/src/youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_62_2.svg)
     
-Após a execução do oversample e depois de treinar o modelo com LinearSVC obtivemos os valores de aproximadamente 65% de recall para negativos e 60% de recall para positivos em word2vec. Para o método LSA, obtivemos um valor mais elevado de recall em negativos (80%) e menor em positivos (35%), porém a fim de equilibrar nossos resultados em ambos os atributos, o word2vec é o mais efiente. 
+After performing the oversampling and training the model with LinearSVC, we obtained recall values of approximately 65% for negative and 60% for positive comments using Word2Vec. For the LSA method, we achieved a higher recall value for negatives (80%) but lower for positives (35%). However, to balance our results in both attributes, Word2Vec is more efficient.
 
-# 5.3 Concretizando resultados
+# 5.3 Finalizing Results
 
-A fim entendermos qual é o resultado concreto do nosso modelo, efetuei o treino do modelo 600 vezes a fim de obter resultados mais precisos. 
+To understand the concrete outcome of our model, I trained the model 600 times to obtain more precise results.
 
 <div>
 <table border="1" class="dataframe">
@@ -903,7 +896,7 @@ A fim entendermos qual é o resultado concreto do nosso modelo, efetuei o treino
     LSA Negative Precision  0.06515107584511744
     LSA Positive Precision  0.6489308944833397
     
-Para ambas as features, obtemos resultados parecidos aos executados anteriormente. Com atenção os nossos atributos principais da feature word2vec de 67% para negativos e 59% para positivos. 
+For both features, we obtained results similar to those previously executed. Notably, our main attributes for the Word2Vec feature were 67% for negatives and 59% for positives.
     
 ![svg](src/src/youtube-comments-types-analysis-complete-review_files/youtube-comments-types-analysis-complete-review_71_1.png)
     
